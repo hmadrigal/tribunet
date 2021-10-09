@@ -1,0 +1,423 @@
+openapi: 3.0.1
+info:
+  title: Atv Api
+  description: API de comprobantes electrónicos para la administración tributaria virtual
+  contact:
+    name: Ministerio de Hacienda de Costa Rica
+    url: https://www.hacienda.go.cr/
+    email: fe@hacienda.go.cr
+  version: 1.0.0
+servers:
+  - url: https://api.comprobanteselectronicos.go.cr/recepcion/v1
+    variables: {}
+    description: Produccion
+  - url: https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1
+    variables: {}
+    description: Sandbox
+tags:
+  - name: recepcion
+  - name: comprobante
+paths:
+  /comprobantes/{clave}:
+    get:
+      tags:
+        - comprobante
+      description: "Obtiene el comprobante indicado por la `clave`."
+      parameters:
+        - name: clave
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Clave"
+      responses:
+        "200":
+          description: "Respuesta correcta completa."
+          headers:
+            X-Ratelimit-Limit:
+              description: "Número de requests permitidos en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Comprobante"
+        "404":
+          description: "Ocurrió un error, no se encuentra el recurso."
+          headers:
+            X-Error-Cause:
+              description: "Muestra la causa del error."
+              schema:
+                type: string
+                example: "No existe el recurso con Clave = [50601011600310112345600100010100000000011999999999]"
+            X-Ratelimit-Limit:
+              description: "Número de requests permitidos en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
+  /recepcion/{clave}:
+    summary: Recepción de comprobantes electrónicos y respuestas del receptor
+    get:
+      tags:
+        - recepcion
+      summary: Obtiene el estado del comprobante indicado por la `clave`
+      description: ""
+      operationId: get-reception
+      parameters:
+        - name: clave
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/Clave"
+      responses:
+        "200":
+          description: Respuesta correcta.
+          headers:
+            X-Ratelimit-Limit:
+              description: Número de requests permitidos en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: Número de requests restantes en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds).
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecepcionGetResponse"
+        "404":
+          description: Ocurrió un error, no se encuentra el recurso.
+          headers:
+            X-Error-Cause:
+              description: Muestra la causa del error.
+              schema:
+                type: string
+              example: No existe el recurso con Clave = [50601011600310112345600100010100000000011999999999]
+            X-Ratelimit-Limit:
+              description: Número de requests permitidos en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: Número de requests restantes en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds).
+              schema:
+                type: integer
+  /recepcion:
+    post:
+      tags:
+        - recepcion
+      summary: Recibe el comprobante electrónico o respuesta del receptor.
+      description: ""
+      operationId: post-reception
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecepcionPostRequest"
+      responses:
+        "201":
+          description: Se recibió correctamente el comprobante electrónico o respuesta del receptor, queda pendiente la validación del mismo y el envío de la respuesta de parte de Hacienda.
+  /comprobantes:
+    summary: Comprobantes electrónicos que ha enviado el obligado tributario.
+    get:
+      tags:
+        - comprobante
+      description: "Obtiene un resumen de todos los comprobantes electrónicos que ha enviado el obligado tributario ordenado de forma descendente por la fecha."
+      parameters:
+        - name: offset
+          description: "A partir de que posición contar los items a retornar"
+          in: query
+          required: false
+          schema:
+            type: integer
+          example: 10
+        - name: limit
+          description: "Cantidad de items a retornar apartir del offset"
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 50
+        - name: emisor
+          description: "Tipo y número de identificación del emisor."
+          in: query
+          schema:
+            type: integer
+            maxLength: 14
+            example: "02003101123456"
+        - name: receptor
+          description: "Tipo y número de identificación del receptor."
+          in: query
+          schema:
+            type: string
+            maxLength: 14
+            example: "02003101123456"
+      responses:
+        "200":
+          description: "Respuesta correcta completa."
+          headers:
+            Accept-Range:
+              description: Muestra la cantidad máxima de items que se le puede solicitar al recurso.
+              schema:
+                type: string
+                example: "resource 50"
+            X-Ratelimit-Limit:
+              description: "Número de requests permitidos en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comprobante"
+        "206":
+          description: "Respuesta correcta parcial debido al uso de `offset` y/o `limit`."
+          headers:
+            Accept-Range:
+              description: Muestra la cantidad máxima de items que se le puede solicitar al recurso.
+              schema:
+                type: string
+                example: "resource 50"
+            Content-Range:
+              description: "Muestra la información del `offset-limit`/`count_all`"
+              schema:
+                type: string
+                example: "0-10/100"
+            X-Ratelimit-Limit:
+              description: "Número de requests permitidos en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Comprobante"
+security:
+  - Produccion: []
+  - Sandbox: []
+components:
+  securitySchemes:
+    Produccion:
+      type: oauth2
+      description: See [ELABORACIÓN DE COMPROBANTES ELECTRÓNICOS](https://www.hacienda.go.cr/contenido/14050-nuevas-funcionalidades-en-atv-para-elaboracion-de-comprobantes-electronicos)
+      flows:
+        clientCredentials:
+          tokenUrl: https://idp.comprobanteselectronicos.go.cr/auth/realms/rut/protocol/openid-connect/token
+          scopes: {}
+    Sandbox:
+      type: oauth2
+      description: See [ELABORACIÓN DE COMPROBANTES ELECTRÓNICOS](https://www.hacienda.go.cr/contenido/14050-nuevas-funcionalidades-en-atv-para-elaboracion-de-comprobantes-electronicos)
+      flows:
+        clientCredentials:
+          tokenUrl: https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token
+          scopes: {}
+  schemas:
+    Clave:
+      title: Clave
+      type: string
+      maxLength: 50
+      example: "50601011600310112345600100010100000000011999999999"
+    RecepcionGetResponse:
+      title: RecepcionGetResponse
+      type: object
+      properties:
+        clave:
+          type: string
+          maxLength: 50
+        fecha:
+          description: >-
+            Fecha de la factura en formato [yyyy-MM-dd'T'HH:mm:ssZ] como se
+            define en [http://tools.ietf.org/html/rfc3339#section-5.6]
+            (date-time).
+          type: string
+        indEstado:
+          type: string
+          enum:
+            - RECIBIDO
+            - PROCESANDO
+            - ACEPTADO
+            - RECHAZADO
+            - ERROR
+        callbackUrl:
+          description: URL utilizado para que Hacienda envíe la respuesta de aceptación o rechazo. Muestra el URL que fue enviado por el obligado tributario.
+          type: string
+        respuestaXml:
+          description: Respuesta de aceptación o rechazo en XML firmada por el Ministerio de Hacienda utilizando XAdES-XL. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8.
+          type: string
+      required:
+        - clave
+        - fecha
+        - indEstado
+    RecepcionPostRequest:
+      title: RecepcionPostRequest
+      type: object
+      properties:
+        clave:
+          type: string
+          maxLength: 50
+        fecha:
+          description: >-
+            Fecha de la factura en formato [yyyy-MM-dd'T'HH:mm:ssZ] como se
+            define en [http://tools.ietf.org/html/rfc3339#section-5.6]
+            (date-time).
+          type: string
+        emisor:
+          type: object
+          properties:
+            tipoIdentificacion:
+              type: string
+              maxLength: 2
+            numeroIdentificacion:
+              type: string
+              maxLength: 12
+          required:
+            - tipoIdentificacion
+            - numeroIdentificacion
+        receptor:
+          type: object
+          properties:
+            tipoIdentificacion:
+              type: string
+              maxLength: 2
+            numeroIdentificacion:
+              type: string
+              maxLength: 12
+          required:
+            - tipoIdentificacion
+            - numeroIdentificacion
+        callbackUrl:
+          description: URL utilizado para que Hacienda envíe la respuesta de aceptación o rechazo, se va a enviar un mensaje JSON, igual al que se define en recepcionGetItem, por medio de un canal HTTP/HTTPS utilizando POST.
+          type: string
+        consecutivoReceptor:
+          description: Numeración consecutiva de los mensajes de confirmación. Este atributo es obligatorio en caso de ser un mensaje de confirmación del receptor.
+          type: string
+        comprobanteXml:
+          description: Comprobante electrónico XML firmado por el obligado tributario utilizando XAdES-EPES. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8.
+          type: string
+      required:
+        - clave
+        - fecha
+        - emisor
+        - comprobanteXml
+    Comprobante:
+      title: Comprobante
+      type: object
+      properties:
+        clave:
+          type: string
+          maxLength: 50
+        fecha:
+          description: >-
+            Fecha de la factura en formato [yyyy-MM-dd'T'HH:mm:ssZ] como se define
+            en [http://tools.ietf.org/html/rfc3339#section-5.6] (date-time).
+          type: string
+        emisor:
+          type: object
+          properties:
+            tipoIdentificacion:
+              type: string
+              maxLength: 2
+            numeroIdentificacion:
+              type: string
+              maxLength: 12
+            nombre:
+              type: string
+              maxLength: 80
+          required:
+            - tipoIdentificacion
+            - numeroIdentificacion
+            - nombre
+        receptor:
+          type: object
+          properties:
+            tipoIdentificacion:
+              type: string
+              maxLength: 2
+            numeroIdentificacion:
+              type: string
+              maxLength: 12
+            nombre:
+              type: string
+              maxLength: 80
+          required:
+            - tipoIdentificacion
+            - numeroIdentificacion
+            - nombre
+        notasCredito:
+          type: array
+          items:
+            type: object
+            properties:
+              clave:
+                type: string
+                maxLength: 50
+              fecha:
+                description: >-
+                  Fecha de la factura en formato [yyyy-MM-dd'T'HH:mm:ssZ] como se
+                  define en [http://tools.ietf.org/html/rfc3339#section-5.6]
+                  (date-time).
+                type: string
+            required:
+              - clave
+              - fecha
+        notasDebito:
+          type: array
+          items:
+            type: object
+            properties:
+              clave:
+                type: string
+                maxLength: 50
+              fecha:
+                description: >-
+                  Fecha de la factura en formato [yyyy-MM-dd'T'HH:mm:ssZ] como se
+                  define en [http://tools.ietf.org/html/rfc3339#section-5.6]
+                  (date-time).
+                type: string
+            required:
+              - clave
+              - fecha
+      required:
+        - clave
+        - fecha
+        - emisor
+        - receptor

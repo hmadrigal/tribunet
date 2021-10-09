@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <AssemblyName>Tribunet.Atv</AssemblyName>
+    <PackageId>Tribunet.Atv</PackageId>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Tribunet.Atv</RootNamespace>
+    <Version>1.0.0</Version>
+    <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\Tribunet.Atv.ApiClient.xml</DocumentationFile>
+    <RepositoryUrl>https://github.com/GIT_USER_ID/GIT_REPO_ID.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Minor update</PackageReleaseNotes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Resources\FacturaElectronica_V.4.2.xsd" />
+    <None Remove="Resources\MensajeHacienda_V4.2.xsd" />
+    <None Remove="Resources\MensajeReceptor_4.2.xsd" />
+    <None Remove="Resources\NotaCreditoElectronica_V4.2.xsd" />
+    <None Remove="Resources\NotaDebitoElectronica_V4.2.xsd" />
+    <None Remove="Resources\TiqueteElectronico_V4.2.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\FacturaElectronica_V.4.2.xsd" />
+    <EmbeddedResource Include="Resources\MensajeHacienda_V4.2.xsd" />
+    <EmbeddedResource Include="Resources\MensajeReceptor_4.2.xsd" />
+    <EmbeddedResource Include="Resources\NotaCreditoElectronica_V4.2.xsd" />
+    <EmbeddedResource Include="Resources\NotaDebitoElectronica_V4.2.xsd" />
+    <EmbeddedResource Include="Resources\TiqueteElectronico_V4.2.xsd" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FirmaXadesNetCore" Version="1.1.0" />
+  </ItemGroup>
+
+</Project>

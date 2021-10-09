@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\client\src\Tribunet.Atv.ApiClient\Tribunet.Atv.ApiClient.csproj" />
+    <ProjectReference Include="..\Tribunet.Atv\Tribunet.Atv.csproj" />
+  </ItemGroup>
+
+</Project>
