@@ -15,22 +15,22 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\FacturaElectronica_V.4.2.xsd" />
-    <None Remove="Resources\MensajeHacienda_V4.2.xsd" />
-    <None Remove="Resources\MensajeReceptor_4.2.xsd" />
-    <None Remove="Resources\NotaCreditoElectronica_V4.2.xsd" />
-    <None Remove="Resources\NotaDebitoElectronica_V4.2.xsd" />
-    <None Remove="Resources\TiqueteElectronico_V4.2.xsd" />
+    <None Remove="Resources\FacturaElectronica_V_4_2.xsd" />
+    <None Remove="Resources\MensajeHacienda_V4_2.xsd" />
+    <None Remove="Resources\MensajeReceptor_4_2.xsd" />
+    <None Remove="Resources\NotaCreditoElectronica_V4_2.xsd" />
+    <None Remove="Resources\NotaDebitoElectronica_V4_2.xsd" />
+    <None Remove="Resources\TiqueteElectronico_V4_2.xsd" />
     <None Remove="Resources\xmldsig-core-schema.xsd" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Resources\FacturaElectronica_V.4.2.xsd" />
-    <EmbeddedResource Include="Resources\MensajeHacienda_V4.2.xsd" />
-    <EmbeddedResource Include="Resources\MensajeReceptor_4.2.xsd" />
-    <EmbeddedResource Include="Resources\NotaCreditoElectronica_V4.2.xsd" />
-    <EmbeddedResource Include="Resources\NotaDebitoElectronica_V4.2.xsd" />
-    <EmbeddedResource Include="Resources\TiqueteElectronico_V4.2.xsd" />
+    <EmbeddedResource Include="Resources\FacturaElectronica_V_4_2.xsd" />
+    <EmbeddedResource Include="Resources\MensajeHacienda_V4_2.xsd" />
+    <EmbeddedResource Include="Resources\MensajeReceptor_4_2.xsd" />
+    <EmbeddedResource Include="Resources\NotaCreditoElectronica_V4_2.xsd" />
+    <EmbeddedResource Include="Resources\NotaDebitoElectronica_V4_2.xsd" />
+    <EmbeddedResource Include="Resources\TiqueteElectronico_V4_2.xsd" />
     <EmbeddedResource Include="Resources\xmldsig-core-schema.xsd" />
   </ItemGroup>
 

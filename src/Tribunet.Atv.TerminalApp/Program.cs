@@ -57,7 +57,7 @@ namespace Tribunet.Atv.TerminalApp
             Stream xmlSchemaStream = default;
 
             xmlSchemaSet = new XmlSchemaSet();
-            xmlSchemaStream = xmlResourceAssembly.GetManifestResourceStream("Tribunet.Atv.Resources.FacturaElectronica_V.4.2.xsd");
+            xmlSchemaStream = xmlResourceAssembly.GetManifestResourceStream("Tribunet.Atv.Resources.FacturaElectronica_V_4_2.xsd");
             xmlSchemaSet.Add("https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica", XmlReader.Create(xmlSchemaStream));
             xmlSettings.Schemas.Add(xmlSchemaSet);
 
