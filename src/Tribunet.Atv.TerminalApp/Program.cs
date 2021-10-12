@@ -1,10 +1,8 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
-using Org.BouncyCastle.Crypto.Agreement;
 using Tribunet.Atv.Services;
 
 namespace Tribunet.Atv.TerminalApp
@@ -13,6 +11,8 @@ namespace Tribunet.Atv.TerminalApp
     {
         static void Main(string[] args)
         {
+            var comprobanteStream = new System.IO.MemoryStream();
+
             // generates comprobante electronico
             var facturaElectronica = new Models.FacturaElectronica_V_4_2.FacturaElectronica();
             facturaElectronica.Clave =
@@ -20,45 +20,62 @@ namespace Tribunet.Atv.TerminalApp
 
             // serializes comprobante electronico into XML
             var xmlSerializer = new XmlSerializer(typeof(Models.FacturaElectronica_V_4_2.FacturaElectronica));
-            var sb = new StringBuilder();
-            var textWriter = new StringWriter(sb);
+            var textWriter = new StreamWriter(comprobanteStream);
             xmlSerializer.Serialize(textWriter, facturaElectronica);
+            comprobanteStream.Flush();
+            comprobanteStream.Seek(0, SeekOrigin.Begin);
+
+            // Gets XML Text
+            var encoding = System.Text.Encoding.UTF8;
+            var xmlComprobante = encoding.GetString(comprobanteStream.ToArray());
 
             // validates against XSD
+            var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
+            static void ValidationCallBack(object sender, ValidationEventArgs args)
+            {
+                if (args.Severity == XmlSeverityType.Warning)
+                    Console.WriteLine("\tWarning: Matching schema not found.  No validation occurred." + args.Message);
+                else
+                    Console.WriteLine("\tValidation error: " + args.Message);
 
-            XmlSchemaSet schemas = new XmlSchemaSet();
-            schemas.Add(XmlSchema.Read(System.IO.File.OpenRead(
-                @"D:\projects\github\tribunet\src\Tribunet.Atv\Resources\FacturaElectronica_V.4.2.xsd"
-                ), OnXmlReaderSettingsValidationEventHandler));
-            var xmlReaderSettings = new XmlReaderSettings();
-            xmlReaderSettings.DtdProcessing = DtdProcessing.Parse;
-            xmlReaderSettings.ValidationType = ValidationType.DTD;
-            xmlReaderSettings.Schemas.Add(schemas);
-            xmlReaderSettings.Schemas.Add(
-                "https://www.w3.org/TR/2008/REC-xmldsig-core-20080610/xmldsig-core-schema.xsd",
-                @"D:\projects\github\tribunet\src\Tribunet.Atv\Resources\xmldsig-core-schema.xsd");
-            xmlReaderSettings.ValidationType = ValidationType.Schema;
-            xmlReaderSettings.ValidationEventHandler += OnXmlReaderSettingsValidationEventHandler;
-            var textReader = new StringReader(sb.ToString());
-            XmlReader xmlReader = XmlReader.Create(textReader, xmlReaderSettings);
-            while (xmlReader.Read()) { }
+            }
+            var xmlSettings = new XmlReaderSettings();
+            xmlSettings.ValidationType = ValidationType.Schema;
+            xmlSettings.DtdProcessing = DtdProcessing.Parse;
+            xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
+            xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
+            xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
+            xmlSettings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
+
+
+            XmlSchemaSet xmlSchemaSet = default;
+            Stream xmlSchemaStream = default;
+
+            xmlSchemaSet = new XmlSchemaSet();
+            xmlSchemaStream = xmlResourceAssembly.GetManifestResourceStream("Tribunet.Atv.Resources.FacturaElectronica_V.4.2.xsd");
+            xmlSchemaSet.Add("https://tribunet.hacienda.go.cr/docs/esquemas/2017/v4.2/facturaElectronica", XmlReader.Create(xmlSchemaStream));
+            xmlSettings.Schemas.Add(xmlSchemaSet);
+
+
+            xmlSchemaSet = new XmlSchemaSet();
+            xmlSchemaStream = xmlResourceAssembly.GetManifestResourceStream("Tribunet.Atv.Resources.xmldsig-core-schema.xsd");
+            xmlSchemaSet.Add("http://www.w3.org/2000/09/xmldsig#", XmlReader.Create(xmlSchemaStream, new XmlReaderSettings()
+            {
+                DtdProcessing = DtdProcessing.Parse
+            }));
+            xmlSettings.Schemas.Add(xmlSchemaSet);
+
+            // Create the XmlReader object.
+            var textReader = new System.IO.StreamReader(comprobanteStream);
+            XmlReader reader = XmlReader.Create(textReader, xmlSettings);
+
+            // Parse the file. 
+            while (reader.Read()) ;
 
 
             Console.WriteLine("Hello World!");
         }
 
-        private static void OnXmlReaderSettingsValidationEventHandler(object sender, ValidationEventArgs e)
-        {
-            if (e.Severity == XmlSeverityType.Warning)
-            {
-                Console.Write("WARNING: ");
-                Console.WriteLine(e.Message);
-            }
-            else if (e.Severity == XmlSeverityType.Error)
-            {
-                Console.Write("ERROR: ");
-                Console.WriteLine(e.Message);
-            }
-        }
+
     }
 }

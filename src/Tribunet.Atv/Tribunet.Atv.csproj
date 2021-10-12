@@ -21,6 +21,7 @@
     <None Remove="Resources\NotaCreditoElectronica_V4.2.xsd" />
     <None Remove="Resources\NotaDebitoElectronica_V4.2.xsd" />
     <None Remove="Resources\TiqueteElectronico_V4.2.xsd" />
+    <None Remove="Resources\xmldsig-core-schema.xsd" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,6 +31,7 @@
     <EmbeddedResource Include="Resources\NotaCreditoElectronica_V4.2.xsd" />
     <EmbeddedResource Include="Resources\NotaDebitoElectronica_V4.2.xsd" />
     <EmbeddedResource Include="Resources\TiqueteElectronico_V4.2.xsd" />
+    <EmbeddedResource Include="Resources\xmldsig-core-schema.xsd" />
   </ItemGroup>
 
   <ItemGroup>
