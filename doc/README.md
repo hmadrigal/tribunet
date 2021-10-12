@@ -39,7 +39,7 @@ docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\pro
 
 - Herramientas
   - [FirmaXadesNetCore GitHub](https://github.com/newverdun/FirmaXadesNetCore)
-  - [FirmaXadesNetCore Nuget](https://www.nuget.org/packages/FirmaXadesNetCore/)
+  - [FirmaXadesNetCore Nuget](https://www.nuget.org/packages/FirmaXadesNetCore/ )
   - [openapi-generator](https://openapi-generator.tech/)
   - [Swagger Editor](https://editor.swagger.io)
   - [OpenAPI.Tools](https://openapi.tools/)
