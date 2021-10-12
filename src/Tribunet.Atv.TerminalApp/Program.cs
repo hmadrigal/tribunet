@@ -5,6 +5,8 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Tribunet.Atv.ApiClient.Api;
+using Tribunet.Atv.ApiClient.Model;
 using Tribunet.Atv.Services;
 
 namespace Tribunet.Atv.TerminalApp
@@ -27,9 +29,7 @@ namespace Tribunet.Atv.TerminalApp
             comprobanteStream.Flush();
             comprobanteStream.Seek(0, SeekOrigin.Begin);
 
-            // Gets XML Text
-            var encoding = System.Text.Encoding.UTF8;
-            var xmlComprobante = encoding.GetString(comprobanteStream.ToArray());
+            // TODO: Sign the XML
 
             // validates against XSD
             var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(),StringComparer.InvariantCultureIgnoreCase);
@@ -78,7 +78,19 @@ namespace Tribunet.Atv.TerminalApp
             while (reader.Read()) { }
             xmlSettings.ValidationEventHandler -= ValidationCallBack;
 
+            // Gets XML Text
+            //var encoding = System.Text.Encoding.UTF8;
+            //var xmlComprobante = encoding.GetString(comprobanteStream.ToArray());
 
+            // TODO: Send the Comprobante electronico (XML) using ATV Api Client
+            IRecepcionApi recepcionApi = new RecepcionApi();
+            recepcionApi.PostReception(new RecepcionPostRequest
+            {
+                Emisor = new RecepcionPostRequestEmisor
+                {
+                }, 
+                ComprobanteXml = Convert.ToBase64String(comprobanteStream.ToArray())
+            });
             Console.WriteLine("Hello World!");
         }
 
