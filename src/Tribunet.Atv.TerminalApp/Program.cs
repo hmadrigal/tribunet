@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -30,9 +32,12 @@ namespace Tribunet.Atv.TerminalApp
             var xmlComprobante = encoding.GetString(comprobanteStream.ToArray());
 
             // validates against XSD
+            var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(),StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
-            static void ValidationCallBack(object sender, ValidationEventArgs args)
+            void ValidationCallBack(object sender, ValidationEventArgs args)
             {
+                xdsValidationResult[args.Severity.ToString()].Add(args.Message);
+
                 if (args.Severity == XmlSeverityType.Warning)
                     Console.WriteLine("\tWarning: Matching schema not found.  No validation occurred." + args.Message);
                 else
@@ -45,7 +50,7 @@ namespace Tribunet.Atv.TerminalApp
             xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessInlineSchema;
             xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ProcessSchemaLocation;
             xmlSettings.ValidationFlags |= XmlSchemaValidationFlags.ReportValidationWarnings;
-            xmlSettings.ValidationEventHandler += new ValidationEventHandler(ValidationCallBack);
+            xmlSettings.ValidationEventHandler += ValidationCallBack;
 
 
             XmlSchemaSet xmlSchemaSet = default;
@@ -70,7 +75,8 @@ namespace Tribunet.Atv.TerminalApp
             XmlReader reader = XmlReader.Create(textReader, xmlSettings);
 
             // Parse the file. 
-            while (reader.Read()) ;
+            while (reader.Read()) { }
+            xmlSettings.ValidationEventHandler -= ValidationCallBack;
 
 
             Console.WriteLine("Hello World!");
