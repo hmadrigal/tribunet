@@ -40,6 +40,7 @@ docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\pro
 - Herramientas
   - [FirmaXadesNetCore GitHub](https://github.com/newverdun/FirmaXadesNetCore)
   - [FirmaXadesNetCore Nuget](https://www.nuget.org/packages/FirmaXadesNetCore/ )
+  - [Create XAdES-EPES Factura Electrónica Signature](https://www.example-code.com/csharp/xades_epes_factura_electronica_cr.asp)
   - [Xades.NetCore](https://github.com/pgiacomo69/Xades.NetCore)
   - [openapi-generator](https://openapi-generator.tech/)
   - [Swagger Editor](https://editor.swagger.io)
