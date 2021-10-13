@@ -20,7 +20,19 @@ namespace Tribunet.Atv.TerminalApp
             // generates comprobante electronico
             var facturaElectronica = new Models.FacturaElectronica_V_4_2.FacturaElectronica();
             facturaElectronica.Clave =
-                new ModelDataProvider.Clave(ModelDataProvider.Clave.tipoComprobante.FacturaElectronica);
+                new ClaveNumerica(
+                    codigoPais: 506,
+                    fechaCreacion: DateTime.Now,
+                    cedulaEmisor: "110910312",
+                    numeracionConsecutivo: new NumeroConsecutivo(
+                        tipoComprobante: TipoComprobante.FacturaElectronica,
+                        oficinaId: 1,
+                        puntoDeVentaId: 1,
+                        consecutivoComprobante: 0
+                        ),
+                    situacion: SituacionDelComprobante.Normal,
+                    codigoSeguridad: 1
+                );
 
             // serializes comprobante electronico into XML
             var xmlSerializer = new XmlSerializer(typeof(Models.FacturaElectronica_V_4_2.FacturaElectronica));
@@ -32,7 +44,7 @@ namespace Tribunet.Atv.TerminalApp
             // TODO: Sign the XML
 
             // validates against XSD
-            var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(),StringComparer.InvariantCultureIgnoreCase);
+            var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
             void ValidationCallBack(object sender, ValidationEventArgs args)
             {
@@ -85,12 +97,19 @@ namespace Tribunet.Atv.TerminalApp
             // TODO: Send the Comprobante electronico (XML) using ATV Api Client
             IRecepcionApi recepcionApi = new RecepcionApi();
             recepcionApi.PostReception(new RecepcionPostRequest
-            {
-                Emisor = new RecepcionPostRequestEmisor
+            (
+                clave: facturaElectronica.Clave,
+                fecha: DateTime.Now.ToRfc3339String(),
+                emisor: new RecepcionPostRequestEmisor
                 {
-                }, 
-                ComprobanteXml = Convert.ToBase64String(comprobanteStream.ToArray())
-            });
+                    TipoIdentificacion = 
+                },
+                receptor: new RecepcionPostRequestEmisor
+                {
+
+                },
+                comprobanteXml: Convert.ToBase64String(comprobanteStream.ToArray())
+            ));
             Console.WriteLine("Hello World!");
         }
 
