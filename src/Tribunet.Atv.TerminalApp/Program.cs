@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using Tribunet.Atv.ApiClient.Api;
+using Tribunet.Atv.ApiClient.Client;
 using Tribunet.Atv.ApiClient.Model;
+using Tribunet.Atv.Models.FacturaElectronica_V_4_2;
 using Tribunet.Atv.Services;
 
 namespace Tribunet.Atv.TerminalApp
@@ -15,47 +18,64 @@ namespace Tribunet.Atv.TerminalApp
     {
         static void Main(string[] args)
         {
+            var localNow = DateTime.Now;
+            var utcNow = DateTime.UtcNow;
             var comprobanteStream = new System.IO.MemoryStream();
 
-            // generates comprobante electronico
-            var facturaElectronica = new Models.FacturaElectronica_V_4_2.FacturaElectronica();
-            facturaElectronica.Clave =
-                new ClaveNumerica(
+            // ==========
+            // create `comprobante electronico`
+            var comprobanteElectronico = new Models.FacturaElectronica_V_4_2.FacturaElectronica
+            {
+                Clave = new ClaveNumerica(
                     codigoPais: 506,
-                    fechaCreacion: DateTime.Now,
+                    fechaCreacion: localNow,
                     cedulaEmisor: "110910312",
                     numeracionConsecutivo: new NumeroConsecutivo(
                         tipoComprobante: TipoComprobante.FacturaElectronica,
                         oficinaId: 1,
                         puntoDeVentaId: 1,
                         consecutivoComprobante: 0
-                        ),
+                    ),
                     situacion: SituacionDelComprobante.Normal,
                     codigoSeguridad: 1
-                );
+                ),
+                Emisor = new EmisorType
+                {
+                    Identificacion = new IdentificacionType
+                    {
+                        Tipo = IdentificacionTypeTipo.Item01,
+                        Numero = "110910312",
+                    }
+                },
+                Receptor = new ReceptorType
+                {
+                    Identificacion = new IdentificacionType
+                    {
+                        Tipo = IdentificacionTypeTipo.Item01,
+                        Numero = "1997588"
+                    }
+                }
+            };
 
-            // serializes comprobante electronico into XML
+            // ==========
+            // serializes `comprobante electronico` into XML (represented by a Stream)
             var xmlSerializer = new XmlSerializer(typeof(Models.FacturaElectronica_V_4_2.FacturaElectronica));
             var textWriter = new StreamWriter(comprobanteStream);
-            xmlSerializer.Serialize(textWriter, facturaElectronica);
+            xmlSerializer.Serialize(textWriter, comprobanteElectronico);
             comprobanteStream.Flush();
             comprobanteStream.Seek(0, SeekOrigin.Begin);
 
+            // ==========
             // TODO: Sign the XML
 
-            // validates against XSD
+            // ==========
+            // validates the XML
             var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
+
             void ValidationCallBack(object sender, ValidationEventArgs args)
-            {
-                xdsValidationResult[args.Severity.ToString()].Add(args.Message);
+                => xdsValidationResult[args.Severity.ToString()].Add(args.Message);
 
-                if (args.Severity == XmlSeverityType.Warning)
-                    Console.WriteLine("\tWarning: Matching schema not found.  No validation occurred." + args.Message);
-                else
-                    Console.WriteLine("\tValidation error: " + args.Message);
-
-            }
             var xmlSettings = new XmlReaderSettings();
             xmlSettings.ValidationType = ValidationType.Schema;
             xmlSettings.DtdProcessing = DtdProcessing.Parse;
@@ -86,7 +106,7 @@ namespace Tribunet.Atv.TerminalApp
             var textReader = new System.IO.StreamReader(comprobanteStream);
             XmlReader reader = XmlReader.Create(textReader, xmlSettings);
 
-            // Parse the file. 
+            // Parse the file
             while (reader.Read()) { }
             xmlSettings.ValidationEventHandler -= ValidationCallBack;
 
@@ -94,23 +114,48 @@ namespace Tribunet.Atv.TerminalApp
             //var encoding = System.Text.Encoding.UTF8;
             //var xmlComprobante = encoding.GetString(comprobanteStream.ToArray());
 
-            // TODO: Send the Comprobante electronico (XML) using ATV Api Client
-            IRecepcionApi recepcionApi = new RecepcionApi();
-            recepcionApi.PostReception(new RecepcionPostRequest
-            (
-                clave: facturaElectronica.Clave,
-                fecha: DateTime.Now.ToRfc3339String(),
-                emisor: new RecepcionPostRequestEmisor
-                {
-                    TipoIdentificacion = 
-                },
-                receptor: new RecepcionPostRequestEmisor
-                {
+            // ==========
+            // TODO: Sends the `comprobante electronico` 
 
-                },
+            Configuration config = new Configuration();
+            config.BasePath = "https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1";
+            // Configure OAuth2 access token for authorization: Produccion
+            config.AccessToken = "api-stg";
+            // Configure OAuth2 access token for authorization: Sandbox
+            config.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            
+            var recepcionPostRequest = new RecepcionPostRequest
+            (
+                clave: comprobanteElectronico.Clave,
+                fecha: utcNow.ToRfc3339String(),
+                emisor: new RecepcionPostRequestEmisor(
+                    tipoIdentificacion: comprobanteElectronico.Emisor.Identificacion.Tipo.GetXmlEnumName(),
+                    numeroIdentificacion: comprobanteElectronico.Emisor.Identificacion.Numero
+                ),
+                receptor: new RecepcionPostRequestEmisor(
+                    tipoIdentificacion: comprobanteElectronico.Receptor.Identificacion.Tipo.GetXmlEnumName(),
+                    numeroIdentificacion: comprobanteElectronico.Receptor.Identificacion.Numero
+                ),
                 comprobanteXml: Convert.ToBase64String(comprobanteStream.ToArray())
-            ));
-            Console.WriteLine("Hello World!");
+            );
+
+            var apiInstance = new RecepcionApi(config);
+            try
+            {
+                // Recibe el comprobante electrónico o respuesta del receptor.
+                apiInstance.PostReception(recepcionPostRequest);
+            }
+            catch (ApiException e)
+            {
+                Debug.WriteLine("Exception when calling RecepcionApi.PostReception: " + e.Message);
+                Debug.WriteLine("Status Code: " + e.ErrorCode);
+                Debug.WriteLine(e.StackTrace);
+            }
+
+            // ==========
+            // TODO:  Checks status of the sent `comprobante electronico`
+            Debug.WriteLine("Hello World!");
         }
 
 
