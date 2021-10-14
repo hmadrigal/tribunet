@@ -6,6 +6,10 @@ using System.Linq;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using FirmaXadesNetCore;
+using FirmaXadesNetCore.Crypto;
+using FirmaXadesNetCore.Signature.Parameters;
+using FirmaXadesNetCore.Utils;
 using Tribunet.Atv.ApiClient.Api;
 using Tribunet.Atv.ApiClient.Client;
 using Tribunet.Atv.ApiClient.Model;
@@ -67,6 +71,27 @@ namespace Tribunet.Atv.TerminalApp
 
             // ==========
             // TODO: Sign the XML
+            //XadesService xadesService = new XadesService();
+            //SignatureParameters parametros = new SignatureParameters();
+
+            //parametros.SignaturePolicyInfo = new SignaturePolicyInfo();
+            //parametros.SignaturePolicyInfo.PolicyIdentifier = "http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf";
+            //parametros.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
+            //parametros.SignaturePackaging = SignaturePackaging.ENVELOPED;
+            //parametros.DataFormat = new DataFormat();
+            //parametros.DataFormat.MimeType = "text/xml";
+            //parametros.SignerRole = new SignerRole();
+            //parametros.SignerRole.ClaimedRoles.Add("emisor");
+            
+            //using (parametros.Signer = new Signer(CertUtil.VerifyCertificate()))
+            //{
+            //    using (FileStream fs = new FileStream(ficheroFactura, FileMode.Open))
+            //    {
+            //        var docFirmado = xadesService.Sign(fs, parametros);
+
+            //    }
+            //}
+
 
             // ==========
             // validates the XML
