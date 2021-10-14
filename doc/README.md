@@ -32,12 +32,17 @@ xsd .\Resources\NotaDebitoElectronica_V4.2.xsd  /classes /l:CS /n:Tribunet.Atv.M
 xsd .\Resources\TiqueteElectronico_V4.2.xsd  /classes /l:CS /n:Tribunet.Atv.Models.TiqueteElectronico_V4_2 /o:.\Models\TiqueteElectronico_V4_2
 
 ### Generando API Client based on OpenAPI document
-docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient
 
+#### `csharp-netcore`
+docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient
+--additional-properties=netCoreProjectFile=true,nullableReferenceTypes=true,targetFramework=netstandard2.1
+#### `csharp`
+docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient --additional-properties=netCoreProjectFile=true,targetFramework=netstandard2.1
 
 ## References
 
 - Herramientas
+  - [openapi-generator-cli help](https://openapi-generator.tech/docs/usage/)
   - [FirmaXadesNetCore GitHub](https://github.com/newverdun/FirmaXadesNetCore)
   - [FirmaXadesNetCore Nuget](https://www.nuget.org/packages/FirmaXadesNetCore/ )
   - [Create XAdES-EPES Factura Electrónica Signature](https://www.example-code.com/csharp/xades_epes_factura_electronica_cr.asp)
