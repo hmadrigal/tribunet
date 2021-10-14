@@ -240,14 +240,14 @@ components:
       type: oauth2
       description: See [ELABORACIÓN DE COMPROBANTES ELECTRÓNICOS](https://www.hacienda.go.cr/contenido/14050-nuevas-funcionalidades-en-atv-para-elaboracion-de-comprobantes-electronicos)
       flows:
-        clientCredentials:
+        password:
           tokenUrl: https://idp.comprobanteselectronicos.go.cr/auth/realms/rut/protocol/openid-connect/token
           scopes: {}
     Sandbox:
       type: oauth2
       description: See [ELABORACIÓN DE COMPROBANTES ELECTRÓNICOS](https://www.hacienda.go.cr/contenido/14050-nuevas-funcionalidades-en-atv-para-elaboracion-de-comprobantes-electronicos)
       flows:
-        clientCredentials:
+        password:
           tokenUrl: https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token
           scopes: {}
   schemas:
