@@ -85,7 +85,7 @@ Name | Type | Description  | Notes
 
 <a name="postreception"></a>
 # **PostReception**
-> void PostReception (RecepcionPostRequest recepcionPostRequest = null)
+> void PostReception (RecepcionPostRequest? recepcionPostRequest = null)
 
 Recibe el comprobante electrónico o respuesta del receptor.
 
@@ -111,7 +111,7 @@ namespace Example
             config.AccessToken = "YOUR_ACCESS_TOKEN";
 
             var apiInstance = new RecepcionApi(config);
-            var recepcionPostRequest = new RecepcionPostRequest(); // RecepcionPostRequest |  (optional) 
+            var recepcionPostRequest = new RecepcionPostRequest?(); // RecepcionPostRequest? |  (optional) 
 
             try
             {
@@ -133,7 +133,7 @@ namespace Example
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **recepcionPostRequest** | [**RecepcionPostRequest**](RecepcionPostRequest.md)|  | [optional] 
+ **recepcionPostRequest** | [**RecepcionPostRequest?**](RecepcionPostRequest?.md)|  | [optional] 
 
 ### Return type
 

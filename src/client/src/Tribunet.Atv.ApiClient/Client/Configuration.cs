@@ -18,6 +18,7 @@ using System.Net;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
+using Tribunet.Atv.ApiClient.Authenticator;
 
 namespace Tribunet.Atv.ApiClient.Client
 {
@@ -381,6 +382,8 @@ namespace Tribunet.Atv.ApiClient.Client
             }
         }
 
+        public OAuth2PasswordAuthenticatorOptions OAuth2PasswordAuthenticatorOptions { get; set; }
+
         /// <summary>
         /// Returns URL based on server settings without providing values
         /// for the variables
@@ -513,7 +516,8 @@ namespace Tribunet.Atv.ApiClient.Client
                 Password = second.Password ?? first.Password,
                 AccessToken = second.AccessToken ?? first.AccessToken,
                 TempFolderPath = second.TempFolderPath ?? first.TempFolderPath,
-                DateTimeFormat = second.DateTimeFormat ?? first.DateTimeFormat
+                DateTimeFormat = second.DateTimeFormat ?? first.DateTimeFormat,
+                OAuth2PasswordAuthenticatorOptions = second.OAuth2PasswordAuthenticatorOptions ?? first.OAuth2PasswordAuthenticatorOptions
             };
             return config;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
@@ -11,6 +12,7 @@ using FirmaXadesNetCore.Crypto;
 using FirmaXadesNetCore.Signature.Parameters;
 using FirmaXadesNetCore.Utils;
 using Tribunet.Atv.ApiClient.Api;
+using Tribunet.Atv.ApiClient.Authenticator;
 using Tribunet.Atv.ApiClient.Client;
 using Tribunet.Atv.ApiClient.Model;
 using Tribunet.Atv.Models.FacturaElectronica_V_4_2;
@@ -20,7 +22,7 @@ namespace Tribunet.Atv.TerminalApp
 {
     class Program
     {
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
             var localNow = DateTime.Now;
             var utcNow = DateTime.UtcNow;
@@ -38,7 +40,7 @@ namespace Tribunet.Atv.TerminalApp
                         tipoComprobante: TipoComprobante.FacturaElectronica,
                         oficinaId: 1,
                         puntoDeVentaId: 1,
-                        consecutivoComprobante: 0
+                        consecutivoComprobante: Convert.ToInt32(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                     ),
                     situacion: SituacionDelComprobante.Normal,
                     codigoSeguridad: 1
@@ -82,7 +84,7 @@ namespace Tribunet.Atv.TerminalApp
             //parametros.DataFormat.MimeType = "text/xml";
             //parametros.SignerRole = new SignerRole();
             //parametros.SignerRole.ClaimedRoles.Add("emisor");
-            
+
             //using (parametros.Signer = new Signer(CertUtil.VerifyCertificate()))
             //{
             //    using (FileStream fs = new FileStream(ficheroFactura, FileMode.Open))
@@ -142,14 +144,19 @@ namespace Tribunet.Atv.TerminalApp
             // ==========
             // TODO: Sends the `comprobante electronico` 
 
-            Configuration config = new Configuration();
-            config.BasePath = "https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1";
-            // Configure OAuth2 access token for authorization: Produccion
-            config.AccessToken = "api-stg";
-            // Configure OAuth2 access token for authorization: Sandbox
-            config.AccessToken = "YOUR_ACCESS_TOKEN";
+            Configuration config = new Configuration
+            {
+                BasePath = "https://api.comprobanteselectronicos.go.cr/recepcion-sandbox/v1",
+                OAuth2PasswordAuthenticatorOptions = new OAuth2PasswordAuthenticatorOptions(
+                    accessTokenUrl: Environment.GetEnvironmentVariable("ATV_OAUTH2_ACCESS_TOKEN_URL"),
+                    refreshTokenUrl: Environment.GetEnvironmentVariable("ATV_OAUTH2_REFRESH_TOKEN_URL"),
+                    username: Environment.GetEnvironmentVariable("ATV_OAUTH2_USERNAME"),
+                    password: Environment.GetEnvironmentVariable("ATV_OAUTH2_PASSWORD"),
+                    clientId: Environment.GetEnvironmentVariable("ATV_OAUTH2_CLIENT_ID")
+                )
+            };
+            GlobalConfiguration.Instance.OAuth2PasswordAuthenticatorOptions = config.OAuth2PasswordAuthenticatorOptions;
 
-            
             var recepcionPostRequest = new RecepcionPostRequest
             (
                 clave: comprobanteElectronico.Clave,
@@ -165,11 +172,11 @@ namespace Tribunet.Atv.TerminalApp
                 comprobanteXml: Convert.ToBase64String(comprobanteStream.ToArray())
             );
 
-            var apiInstance = new RecepcionApi(config);
+            var recepcionApiClient = new RecepcionApi(config);
             try
             {
                 // Recibe el comprobante electrónico o respuesta del receptor.
-                apiInstance.PostReception(recepcionPostRequest);
+                await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
             }
             catch (ApiException e)
             {

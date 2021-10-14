@@ -49,25 +49,13 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <param name="comprobanteXml">Comprobante electrónico XML firmado por el obligado tributario utilizando XAdES-EPES. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8. (required).</param>
         public RecepcionPostRequest(string clave = default(string), string fecha = default(string), RecepcionPostRequestEmisor emisor = default(RecepcionPostRequestEmisor), RecepcionPostRequestEmisor receptor = default(RecepcionPostRequestEmisor), string callbackUrl = default(string), string consecutivoReceptor = default(string), string comprobanteXml = default(string))
         {
-            // to ensure "clave" is required (not null)
-            if (clave == null) {
-                throw new ArgumentNullException("clave is a required property for RecepcionPostRequest and cannot be null");
-            }
             this.Clave = clave;
-            // to ensure "fecha" is required (not null)
-            if (fecha == null) {
-                throw new ArgumentNullException("fecha is a required property for RecepcionPostRequest and cannot be null");
-            }
             this.Fecha = fecha;
             // to ensure "emisor" is required (not null)
             if (emisor == null) {
                 throw new ArgumentNullException("emisor is a required property for RecepcionPostRequest and cannot be null");
             }
             this.Emisor = emisor;
-            // to ensure "comprobanteXml" is required (not null)
-            if (comprobanteXml == null) {
-                throw new ArgumentNullException("comprobanteXml is a required property for RecepcionPostRequest and cannot be null");
-            }
             this.ComprobanteXml = comprobanteXml;
             this.Receptor = receptor;
             this.CallbackUrl = callbackUrl;

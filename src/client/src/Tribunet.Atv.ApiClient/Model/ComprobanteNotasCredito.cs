@@ -44,15 +44,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <param name="fecha">Fecha de la factura en formato [yyyy-MM-dd&#39;T&#39;HH:mm:ssZ] como se define en [http://tools.ietf.org/html/rfc3339#section-5.6] (date-time). (required).</param>
         public ComprobanteNotasCredito(string clave = default(string), string fecha = default(string))
         {
-            // to ensure "clave" is required (not null)
-            if (clave == null) {
-                throw new ArgumentNullException("clave is a required property for ComprobanteNotasCredito and cannot be null");
-            }
             this.Clave = clave;
-            // to ensure "fecha" is required (not null)
-            if (fecha == null) {
-                throw new ArgumentNullException("fecha is a required property for ComprobanteNotasCredito and cannot be null");
-            }
             this.Fecha = fecha;
         }
 

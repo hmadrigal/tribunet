@@ -130,7 +130,7 @@ Class | Method | HTTP request | Description
 ### Produccion
 
 - **Type**: OAuth
-- **Flow**: application
+- **Flow**: password
 - **Authorization URL**: 
 - **Scopes**: N/A
 
@@ -138,7 +138,7 @@ Class | Method | HTTP request | Description
 ### Sandbox
 
 - **Type**: OAuth
-- **Flow**: application
+- **Flow**: password
 - **Authorization URL**: 
 - **Scopes**: N/A
 

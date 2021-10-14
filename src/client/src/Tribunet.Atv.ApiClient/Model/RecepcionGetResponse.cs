@@ -91,15 +91,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <param name="respuestaXml">Respuesta de aceptación o rechazo en XML firmada por el Ministerio de Hacienda utilizando XAdES-XL. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8..</param>
         public RecepcionGetResponse(string clave = default(string), string fecha = default(string), IndEstadoEnum indEstado = default(IndEstadoEnum), string callbackUrl = default(string), string respuestaXml = default(string))
         {
-            // to ensure "clave" is required (not null)
-            if (clave == null) {
-                throw new ArgumentNullException("clave is a required property for RecepcionGetResponse and cannot be null");
-            }
             this.Clave = clave;
-            // to ensure "fecha" is required (not null)
-            if (fecha == null) {
-                throw new ArgumentNullException("fecha is a required property for RecepcionGetResponse and cannot be null");
-            }
             this.Fecha = fecha;
             this.IndEstado = indEstado;
             this.CallbackUrl = callbackUrl;

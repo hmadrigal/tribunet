@@ -44,15 +44,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <param name="numeroIdentificacion">numeroIdentificacion (required).</param>
         public RecepcionPostRequestEmisor(string tipoIdentificacion = default(string), string numeroIdentificacion = default(string))
         {
-            // to ensure "tipoIdentificacion" is required (not null)
-            if (tipoIdentificacion == null) {
-                throw new ArgumentNullException("tipoIdentificacion is a required property for RecepcionPostRequestEmisor and cannot be null");
-            }
             this.TipoIdentificacion = tipoIdentificacion;
-            // to ensure "numeroIdentificacion" is required (not null)
-            if (numeroIdentificacion == null) {
-                throw new ArgumentNullException("numeroIdentificacion is a required property for RecepcionPostRequestEmisor and cannot be null");
-            }
             this.NumeroIdentificacion = numeroIdentificacion;
         }
 

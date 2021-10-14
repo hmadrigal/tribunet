@@ -60,7 +60,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="emisor">Tipo y número de identificación del emisor. (optional)</param>
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <returns>List&lt;Comprobante&gt;</returns>
-        List<Comprobante> ComprobantesGet(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string));
+        List<Comprobante> ComprobantesGet(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?));
 
         /// <summary>
         /// 
@@ -74,7 +74,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="emisor">Tipo y número de identificación del emisor. (optional)</param>
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <returns>ApiResponse of List&lt;Comprobante&gt;</returns>
-        ApiResponse<List<Comprobante>> ComprobantesGetWithHttpInfo(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string));
+        ApiResponse<List<Comprobante>> ComprobantesGetWithHttpInfo(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?));
         #endregion Synchronous Operations
     }
 
@@ -120,7 +120,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of List&lt;Comprobante&gt;</returns>
-        System.Threading.Tasks.Task<List<Comprobante>> ComprobantesGetAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<List<Comprobante>> ComprobantesGetAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// 
@@ -135,7 +135,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (List&lt;Comprobante&gt;)</returns>
-        System.Threading.Tasks.Task<ApiResponse<List<Comprobante>>> ComprobantesGetWithHttpInfoAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<List<Comprobante>>> ComprobantesGetWithHttpInfoAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -276,10 +276,6 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <returns>ApiResponse of Comprobante</returns>
         public Tribunet.Atv.ApiClient.Client.ApiResponse<Comprobante> ComprobantesClaveGetWithHttpInfo(string clave)
         {
-            // verify the required parameter 'clave' is set
-            if (clave == null)
-                throw new Tribunet.Atv.ApiClient.Client.ApiException(400, "Missing required parameter 'clave' when calling ComprobanteApi->ComprobantesClaveGet");
-
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
             string[] _contentTypes = new string[] {
@@ -345,10 +341,6 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <returns>Task of ApiResponse (Comprobante)</returns>
         public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<Comprobante>> ComprobantesClaveGetWithHttpInfoAsync(string clave, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            // verify the required parameter 'clave' is set
-            if (clave == null)
-                throw new Tribunet.Atv.ApiClient.Client.ApiException(400, "Missing required parameter 'clave' when calling ComprobanteApi->ComprobantesClaveGet");
-
 
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
@@ -404,7 +396,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="emisor">Tipo y número de identificación del emisor. (optional)</param>
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <returns>List&lt;Comprobante&gt;</returns>
-        public List<Comprobante> ComprobantesGet(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string))
+        public List<Comprobante> ComprobantesGet(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?))
         {
             Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>> localVarResponse = ComprobantesGetWithHttpInfo(offset, limit, emisor, receptor);
             return localVarResponse.Data;
@@ -419,7 +411,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="emisor">Tipo y número de identificación del emisor. (optional)</param>
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <returns>ApiResponse of List&lt;Comprobante&gt;</returns>
-        public Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>> ComprobantesGetWithHttpInfo(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string))
+        public Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>> ComprobantesGetWithHttpInfo(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?))
         {
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
@@ -489,7 +481,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of List&lt;Comprobante&gt;</returns>
-        public async System.Threading.Tasks.Task<List<Comprobante>> ComprobantesGetAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<List<Comprobante>> ComprobantesGetAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>> localVarResponse = await ComprobantesGetWithHttpInfoAsync(offset, limit, emisor, receptor, cancellationToken).ConfigureAwait(false);
             return localVarResponse.Data;
@@ -505,7 +497,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="receptor">Tipo y número de identificación del receptor. (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse (List&lt;Comprobante&gt;)</returns>
-        public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>>> ComprobantesGetWithHttpInfoAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string receptor = default(string), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<List<Comprobante>>> ComprobantesGetWithHttpInfoAsync(int? offset = default(int?), int? limit = default(int?), int? emisor = default(int?), string? receptor = default(string?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();

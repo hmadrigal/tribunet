@@ -48,15 +48,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <param name="notasDebito">notasDebito.</param>
         public Comprobante(string clave = default(string), string fecha = default(string), ComprobanteEmisor emisor = default(ComprobanteEmisor), ComprobanteEmisor receptor = default(ComprobanteEmisor), List<ComprobanteNotasCredito> notasCredito = default(List<ComprobanteNotasCredito>), List<ComprobanteNotasCredito> notasDebito = default(List<ComprobanteNotasCredito>))
         {
-            // to ensure "clave" is required (not null)
-            if (clave == null) {
-                throw new ArgumentNullException("clave is a required property for Comprobante and cannot be null");
-            }
             this.Clave = clave;
-            // to ensure "fecha" is required (not null)
-            if (fecha == null) {
-                throw new ArgumentNullException("fecha is a required property for Comprobante and cannot be null");
-            }
             this.Fecha = fecha;
             // to ensure "emisor" is required (not null)
             if (emisor == null) {

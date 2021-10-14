@@ -51,7 +51,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <exception cref="Tribunet.Atv.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <returns></returns>
-        void PostReception(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest));
+        void PostReception(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?));
 
         /// <summary>
         /// Recibe el comprobante electrónico o respuesta del receptor.
@@ -62,7 +62,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <exception cref="Tribunet.Atv.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        ApiResponse<Object> PostReceptionWithHttpInfo(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest));
+        ApiResponse<Object> PostReceptionWithHttpInfo(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?));
         #endregion Synchronous Operations
     }
 
@@ -105,7 +105,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        System.Threading.Tasks.Task PostReceptionAsync(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task PostReceptionAsync(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
 
         /// <summary>
         /// Recibe el comprobante electrónico o respuesta del receptor.
@@ -117,7 +117,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        System.Threading.Tasks.Task<ApiResponse<Object>> PostReceptionWithHttpInfoAsync(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
+        System.Threading.Tasks.Task<ApiResponse<Object>> PostReceptionWithHttpInfoAsync(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken));
         #endregion Asynchronous Operations
     }
 
@@ -258,10 +258,6 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <returns>ApiResponse of RecepcionGetResponse</returns>
         public Tribunet.Atv.ApiClient.Client.ApiResponse<RecepcionGetResponse> GetReceptionWithHttpInfo(string clave)
         {
-            // verify the required parameter 'clave' is set
-            if (clave == null)
-                throw new Tribunet.Atv.ApiClient.Client.ApiException(400, "Missing required parameter 'clave' when calling RecepcionApi->GetReception");
-
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
             string[] _contentTypes = new string[] {
@@ -327,10 +323,6 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <returns>Task of ApiResponse (RecepcionGetResponse)</returns>
         public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<RecepcionGetResponse>> GetReceptionWithHttpInfoAsync(string clave, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
-            // verify the required parameter 'clave' is set
-            if (clave == null)
-                throw new Tribunet.Atv.ApiClient.Client.ApiException(400, "Missing required parameter 'clave' when calling RecepcionApi->GetReception");
-
 
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
@@ -383,7 +375,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <exception cref="Tribunet.Atv.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <returns></returns>
-        public void PostReception(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest))
+        public void PostReception(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?))
         {
             PostReceptionWithHttpInfo(recepcionPostRequest);
         }
@@ -394,7 +386,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <exception cref="Tribunet.Atv.ApiClient.Client.ApiException">Thrown when fails to make API call</exception>
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <returns>ApiResponse of Object(void)</returns>
-        public Tribunet.Atv.ApiClient.Client.ApiResponse<Object> PostReceptionWithHttpInfo(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest))
+        public Tribunet.Atv.ApiClient.Client.ApiResponse<Object> PostReceptionWithHttpInfo(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?))
         {
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();
 
@@ -446,7 +438,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of void</returns>
-        public async System.Threading.Tasks.Task PostReceptionAsync(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task PostReceptionAsync(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             await PostReceptionWithHttpInfoAsync(recepcionPostRequest, cancellationToken).ConfigureAwait(false);
         }
@@ -458,7 +450,7 @@ namespace Tribunet.Atv.ApiClient.Api
         /// <param name="recepcionPostRequest"> (optional)</param>
         /// <param name="cancellationToken">Cancellation Token to cancel the request.</param>
         /// <returns>Task of ApiResponse</returns>
-        public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<Object>> PostReceptionWithHttpInfoAsync(RecepcionPostRequest recepcionPostRequest = default(RecepcionPostRequest), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
+        public async System.Threading.Tasks.Task<Tribunet.Atv.ApiClient.Client.ApiResponse<Object>> PostReceptionWithHttpInfoAsync(RecepcionPostRequest? recepcionPostRequest = default(RecepcionPostRequest?), System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
 
             Tribunet.Atv.ApiClient.Client.RequestOptions localVarRequestOptions = new Tribunet.Atv.ApiClient.Client.RequestOptions();

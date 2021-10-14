@@ -30,6 +30,7 @@ using RestSharp;
 using RestSharp.Deserializers;
 using RestSharpMethod = RestSharp.Method;
 using Polly;
+using Tribunet.Atv.ApiClient.Authenticator;
 
 namespace Tribunet.Atv.ApiClient.Client
 {
@@ -431,6 +432,10 @@ namespace Tribunet.Atv.ApiClient.Client
         {
             RestClient client = new RestClient(_baseUrl);
 
+            if (configuration.OAuth2PasswordAuthenticatorOptions != null)
+                client.Authenticator =
+                    new OAuth2PasswordAuthenticator(configuration.OAuth2PasswordAuthenticatorOptions);
+
             client.ClearHandlers();
             var existingDeserializer = req.JsonSerializer as IDeserializer;
             if (existingDeserializer != null)
@@ -549,6 +554,10 @@ namespace Tribunet.Atv.ApiClient.Client
         private async Task<ApiResponse<T>> ExecAsync<T>(RestRequest req, IReadableConfiguration configuration, System.Threading.CancellationToken cancellationToken = default(System.Threading.CancellationToken))
         {
             RestClient client = new RestClient(_baseUrl);
+
+            if (configuration.OAuth2PasswordAuthenticatorOptions != null)
+                client.Authenticator =
+                    new OAuth2PasswordAuthenticator(configuration.OAuth2PasswordAuthenticatorOptions);
 
             client.ClearHandlers();
             var existingDeserializer = req.JsonSerializer as IDeserializer;

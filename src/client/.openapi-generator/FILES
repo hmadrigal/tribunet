@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 README.md
 Tribunet.Atv.ApiClient.sln
 appveyor.yml
@@ -12,14 +11,6 @@ docs/RecepcionGetResponse.md
 docs/RecepcionPostRequest.md
 docs/RecepcionPostRequestEmisor.md
 git_push.sh
-src/Tribunet.Atv.ApiClient.Test/Api/ComprobanteApiTests.cs
-src/Tribunet.Atv.ApiClient.Test/Api/RecepcionApiTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/ComprobanteEmisorTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/ComprobanteNotasCreditoTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/ComprobanteTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/RecepcionGetResponseTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/RecepcionPostRequestEmisorTests.cs
-src/Tribunet.Atv.ApiClient.Test/Model/RecepcionPostRequestTests.cs
 src/Tribunet.Atv.ApiClient.Test/Tribunet.Atv.ApiClient.Test.csproj
 src/Tribunet.Atv.ApiClient/Api/ComprobanteApi.cs
 src/Tribunet.Atv.ApiClient/Api/RecepcionApi.cs

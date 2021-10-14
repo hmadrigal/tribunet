@@ -58,3 +58,9 @@ docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\pro
   - [NUEVAS FUNCIONALIDADES EN ATV PARA ELABORACIÓN DE COMPROBANTES ELECTRÓNICOS](https://www.hacienda.go.cr/contenido/14050-nuevas-funcionalidades-en-atv-para-elaboracion-de-comprobantes-electronicos)
   - [Anexos y Estructuras](https://www.hacienda.go.cr/ATV/ComprobanteElectronico/frmAnexosyEstructuras.aspx#)
   - [Estructuras XML para Facturación Electrónica](https://tribunet.hacienda.go.cr/FormatosYEstructurasXML.jsp#)
+
+
+  - [OAuth Password Grant](https://www.oauth.com/oauth2-servers/access-tokens/password-grant/)
+  - [OAuth 2.0 Password Grant](https://oauth.net/2/grant-types/password/)
+  - [How do I get an OAuth 2.0 authentication token in C#](https://stackoverflow.com/questions/38494279/how-do-i-get-an-oauth-2-0-authentication-token-in-c-sharp)
+  - (https://coderoad.ru/38494279/%D0%9A%D0%B0%D0%BA-%D1%8F-%D0%BC%D0%BE%D0%B3%D1%83-%D0%BF%D0%BE%D0%BB%D1%83%D1%87%D0%B8%D1%82%D1%8C-%D1%82%D0%BE%D0%BA%D0%B5%D0%BD-%D0%B0%D1%83%D1%82%D0%B5%D0%BD%D1%82%D0%B8%D1%84%D0%B8%D0%BA%D0%B0%D1%86%D0%B8%D0%B8-OAuth-2-0-%D0%B2-C)

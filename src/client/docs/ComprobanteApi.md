@@ -86,7 +86,7 @@ Name | Type | Description  | Notes
 
 <a name="comprobantesget"></a>
 # **ComprobantesGet**
-> List&lt;Comprobante&gt; ComprobantesGet (int? offset = null, int? limit = null, int? emisor = null, string receptor = null)
+> List&lt;Comprobante&gt; ComprobantesGet (int? offset = null, int? limit = null, int? emisor = null, string? receptor = null)
 
 
 
@@ -117,7 +117,7 @@ namespace Example
             var offset = 10;  // int? | A partir de que posición contar los items a retornar (optional) 
             var limit = 56;  // int? | Cantidad de items a retornar apartir del offset (optional)  (default to 50)
             var emisor = 2003101123456;  // int? | Tipo y número de identificación del emisor. (optional) 
-            var receptor = 02003101123456;  // string | Tipo y número de identificación del receptor. (optional) 
+            var receptor = 02003101123456;  // string? | Tipo y número de identificación del receptor. (optional) 
 
             try
             {
@@ -142,7 +142,7 @@ Name | Type | Description  | Notes
  **offset** | **int?**| A partir de que posición contar los items a retornar | [optional] 
  **limit** | **int?**| Cantidad de items a retornar apartir del offset | [optional] [default to 50]
  **emisor** | **int?**| Tipo y número de identificación del emisor. | [optional] 
- **receptor** | **string**| Tipo y número de identificación del receptor. | [optional] 
+ **receptor** | **string?**| Tipo y número de identificación del receptor. | [optional] 
 
 ### Return type
 
