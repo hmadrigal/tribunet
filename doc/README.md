@@ -34,8 +34,7 @@ xsd .\Resources\TiqueteElectronico_V4.2.xsd  /classes /l:CS /n:Tribunet.Atv.Mode
 ### Generando API Client based on OpenAPI document
 
 #### `csharp-netcore`
-docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient
---additional-properties=netCoreProjectFile=true,nullableReferenceTypes=true,targetFramework=netstandard2.1
+docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient --additional-properties=netCoreProjectFile=true,nullableReferenceTypes=true,targetFramework=netstandard2.1
 #### `csharp`
 docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\projects\github\tribunet\doc:/docs -v D:\projects\github\tribunet\src:/src openapitools/openapi-generator-cli generate -i /docs/atv-1.0.0-openapi-3.0.1.yml -g csharp-netcore -o /src/client/ --package-name Tribunet.Atv.ApiClient --additional-properties=netCoreProjectFile=true,targetFramework=netstandard2.1
 
