@@ -41,6 +41,7 @@ docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\pro
 ## References
 
 - Herramientas
+  - [Factura Electrónica Costa Rica](http://www.lib4dev.in/info/royrojas/FacturaElectronicaCR/121313065˜)
   - [MSDN Developer Network - Como Firmar Documento XML con XADES-EPES ?](https://social.msdn.microsoft.com/Forums/es-ES/92a773cf-3f94-45a7-a54b-f28d5994f1f2/como-firmar-documento-xml-con-xadesepes-?forum=vcses)
   - [Stackoverflow - ¿Cómo firmar documento XML con XADES-EPES?](https://es.stackoverflow.com/questions/102351/c%c3%b3mo-firmar-documento-xml-con-xades-epes)
   - [Wikipedia Xades](https://es.wikipedia.org/wiki/Xades)
