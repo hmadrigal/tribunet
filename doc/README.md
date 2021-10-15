@@ -41,6 +41,8 @@ docker run --rm -v D:\projects\github\tribunet\src\Tribunet.Atv:/local -v D:\pro
 ## References
 
 - Herramientas
+  - [Stackoverflow - ¿Cómo firmar documento XML con XADES-EPES?](https://es.stackoverflow.com/questions/102351/c%c3%b3mo-firmar-documento-xml-con-xades-epes)
+  - [Wikipedia Xades](https://es.wikipedia.org/wiki/Xades)
   - [openapi-generator-cli help](https://openapi-generator.tech/docs/usage/)
   - [FirmaXadesNetCore GitHub](https://github.com/newverdun/FirmaXadesNetCore)
   - [FirmaXadesNetCore Nuget](https://www.nuget.org/packages/FirmaXadesNetCore/ )
