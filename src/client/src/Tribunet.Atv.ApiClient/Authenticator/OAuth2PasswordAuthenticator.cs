@@ -23,6 +23,14 @@ namespace Tribunet.Atv.ApiClient.Authenticator
                 // TODO: Try to load token from storage into _currentToken. If not available, _currentToken should be null.
             }
 
+            if (HasExpired(_currentToken))
+            {
+                // TODO: Retrieve token from Refresh Token Url
+                // if token cannot be refreshed , then _currentToken is set to null
+
+                // TODO: Save token to storage only when token has been refreshed
+            }
+
             if (_currentToken == null)
             {
                 var idpClient = new RestClient(_options.AccessTokenUrl);
@@ -41,13 +49,6 @@ namespace Tribunet.Atv.ApiClient.Authenticator
                 }
             }
 
-            
-            if (HasExpired(_currentToken))
-            {
-                // TODO: Retrieve token from Refresh Token Url
-
-                // TODO: Save token to storage
-            }
 
             request.AddOrUpdateParameter(GetAuthenticationParameter(_currentToken.AccessToken));
         }
