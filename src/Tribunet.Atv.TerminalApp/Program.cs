@@ -10,6 +10,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using FirmaXadesNetCore;
 using FirmaXadesNetCore.Signature.Parameters;
+using Org.BouncyCastle.Asn1.Misc;
 using Tribunet.Atv.ApiClient.Api;
 using Tribunet.Atv.ApiClient.Authenticator;
 using Tribunet.Atv.ApiClient.Client;
@@ -70,18 +71,18 @@ namespace Tribunet.Atv.TerminalApp
             comprobanteStream.Flush();
             comprobanteStream.Seek(0, SeekOrigin.Begin);
 
-            
+
             //// Gets XML Text
             //var encoding = System.Text.Encoding.UTF8;
             //var xmlSignedComprobante = encoding.GetString(signedComprobanteStream.ToArray());
 
             // ==========
             // validates the XML against XSD
-            var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
+            var xsdValidationResults = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
 
             void ValidationCallBack(object sender, ValidationEventArgs args)
-                => xdsValidationResult[args.Severity.ToString()].Add(args.Message);
+                => xsdValidationResults[args.Severity.ToString()].Add(args.Message);
 
             var xmlSettings = new XmlReaderSettings();
             xmlSettings.ValidationType = ValidationType.Schema;
@@ -117,6 +118,15 @@ namespace Tribunet.Atv.TerminalApp
             while (reader.Read()) { }
             xmlSettings.ValidationEventHandler -= ValidationCallBack;
             comprobanteStream.Seek(0, SeekOrigin.Begin);
+
+            var hasXsdErrors = xsdValidationResults.Any(kvp => kvp.Value.Count > 0);
+            if (hasXsdErrors)
+            {
+                foreach (var xsdValidationResult in xsdValidationResults)
+                    foreach (var message in xsdValidationResult.Value)
+                        Debug.WriteLine($"[{xsdValidationResult.Key}] {message}");
+                return;
+            }
 
             // ==========
             // Sign the XML
