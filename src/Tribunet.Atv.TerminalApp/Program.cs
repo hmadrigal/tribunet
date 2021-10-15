@@ -77,27 +77,15 @@ namespace Tribunet.Atv.TerminalApp
 
             // ==========
             // TODO: Sign the XML
-            var xadesService = new XadesService();
-            xadesService.
-            //var signatureParameters = new SignatureParameters();
-
-            //signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
-            //signatureParameters.SignaturePolicyInfo.PolicyIdentifier = "http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf";
-            //signatureParameters.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
-            //signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
-            //signatureParameters.DataFormat = new DataFormat();
-            //signatureParameters.DataFormat.MimeType = "text/xml";
-            //signatureParameters.SignerRole = new SignerRole();
-            //signatureParameters.SignerRole.ClaimedRoles.Add("emisor");
-
-            //using (signatureParameters.Signer = new Signer(CertUtil.VerifyCertificate()))
-            //{
-            //    using (FileStream fs = new FileStream(ficheroFactura, FileMode.Open))
-            //    {
-            //        var docFirmado = xadesService.Sign(fs, signatureParameters);
-
-            //    }
-            //}
+            var certificateSubject = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_SUBJECT");
+            X509Certificate2 certificate = GetCertificate(certificateSubject);
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.PreserveWhitespace = true;
+            xmlDocument.Load(comprobanteStream);
+            var signedXmlDocument = SignUsingXadesEPES(xmlDocument, certificate);
+            var signedComprobanteStream = new MemoryStream();
+            signedXmlDocument.WriteTo(XmlWriter.Create(signedComprobanteStream));
+            signedComprobanteStream.Seek(0, SeekOrigin.Begin);
 
 
             // ==========
@@ -197,129 +185,112 @@ namespace Tribunet.Atv.TerminalApp
 
 
         #region XAdES-EPES Signer
+
         // 1. - Seleccion del certificado
-        public X509Certificate2 ElegirCertificado()
+        public static X509Certificate2 GetCertificate(string subject)
         {
             X509Store store = new X509Store(StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-            X509Certificate2Collection certificates = store.Certificates;
-            X509Certificate2Collection foundCertificates = certificates.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
-            X509Certificate2 cert = 
-                foundCertificates
+            X509Certificate2Collection allCertificates = store.Certificates;
+            X509Certificate2Collection nonExpiredCertificates = allCertificates.Find(X509FindType.FindByTimeValid, DateTime.Now, false);
+            X509Certificate2 selectedCertificate =
+                nonExpiredCertificates
                 .OfType<X509Certificate2>()
-                .Where(x => x.Subject == "CN=NEOTECNOLOGIAS SOCIEDAD ANONIMA, OU=CPJ, O=PERSONA JURIDICA, C=CR, G=NEOTECNOLOGIAS SOCIEDAD ANONIMA, SN=\"\", SERIALNUMBER=CPJ-3-101-408861")
-                .First();
-            return cert;
-        }
+                .FirstOrDefault(x => x.Subject == subject);
 
-        public string PreviaXadesEpes(string path)
-        {
-            error = "true";
-            try
-            {
-                X509Certificate2 certificado = new X509Certificate2();
-                certificado = ElegirCertificado();
-                XmlDocument xmlDoc = new XmlDocument();
-                xmlDoc.PreserveWhitespace = true;
-
-                xmlDoc.Load(path);
-                xmlDoc = FirmarXadesEPES(xmlDoc, certificado);
-                xmlDoc.Save(path);
-            }
-            catch (Exception ex) { error = ex.ToString(); }
-            return error;
+            return selectedCertificate;
         }
 
         // 2. - Ejecuto los siguientes metodos :
-        private XmlDocument FirmarXadesEPES(XmlDocument xmlDoc, X509Certificate2 certificate)
+        private static XmlDocument SignUsingXadesEPES(XmlDocument xmlDocument, X509Certificate2 certificate)
         {
 
-            XadesSignedXml signedXml = new XadesSignedXml(xmlDoc);
+            XadesSignedXml signedXml = new XadesSignedXml(xmlDocument);
             signedXml.Signature.Id = "SignatureId";
             signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
             signedXml.SignedInfo.SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha256";
 
             string URI = "http://uri.etsi.org/01903/v1.3.2#";
-            XmlElement qualifyingPropertiesRoot = xmlDoc.CreateElement("xades", "QualifyingProperties", URI);
-            qualifyingPropertiesRoot.SetAttribute("Target", "#SignatureId", URI);
+            XmlElement qualifyingPropertiesRootElement = xmlDocument.CreateElement("xades", "QualifyingProperties", URI);
+            qualifyingPropertiesRootElement.SetAttribute("Target", "#SignatureId", URI);
 
-            XmlElement signaturePropertiesRoot = xmlDoc.CreateElement("xades", "SignedProperties", URI);
-            signaturePropertiesRoot.SetAttribute("Id", "SignedPropertiesId", URI);
+            XmlElement signaturePropertiesRootElement = xmlDocument.CreateElement("xades", "SignedProperties", URI);
+            signaturePropertiesRootElement.SetAttribute("Id", "SignedPropertiesId", URI);
 
-            XmlElement SignedSignatureProperties = xmlDoc.CreateElement("xades", "SignedSignatureProperties", URI);
+            XmlElement signedSignaturePropertiesElement = xmlDocument.CreateElement("xades", "SignedSignatureProperties", URI);
 
-            XmlElement timestamp = xmlDoc.CreateElement("xades", "SigningTime", URI);
-            timestamp.InnerText = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); //2011-09-05T09:11:24.268Z
-            SignedSignatureProperties.AppendChild(timestamp);
+            XmlElement timestampElement = xmlDocument.CreateElement("xades", "SigningTime", URI);
+            timestampElement.InnerText = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"); //2011-09-05T09:11:24.268Z
+            signedSignaturePropertiesElement.AppendChild(timestampElement);
 
-            XmlElement SigningCertificate = xmlDoc.CreateElement("xades", "SigningCertificate", URI);
-            XmlElement Cert = xmlDoc.CreateElement("xades", "Cert", URI);
-            XmlElement CertDigest = xmlDoc.CreateElement("xades", "CertDigest", URI);
+            XmlElement signingCertificateElement = xmlDocument.CreateElement("xades", "SigningCertificate", URI);
+            XmlElement certElement = xmlDocument.CreateElement("xades", "Cert", URI);
+            XmlElement certDigestElement = xmlDocument.CreateElement("xades", "CertDigest", URI);
             SHA1 cryptoServiceProvider = new SHA1CryptoServiceProvider();
             byte[] sha1 = cryptoServiceProvider.ComputeHash(certificate.RawData);
 
-            XmlElement DigestMethod = xmlDoc.CreateElement("ds", "DigestMethod", URI);
+            XmlElement digestMethodElement = xmlDocument.CreateElement("ds", "DigestMethod", URI);
 
-            DigestMethod.SetAttribute("Algorithm", SignedXml.XmlDsigSHA1Url);
-            XmlElement DigestValue = xmlDoc.CreateElement("ds", "DigestValue", URI);
-            DigestValue.InnerText = Convert.ToBase64String(sha1);
-            CertDigest.AppendChild(DigestMethod);
-            CertDigest.AppendChild(DigestValue);
-            Cert.AppendChild(CertDigest);
+            digestMethodElement.SetAttribute("Algorithm", SignedXml.XmlDsigSHA1Url);
+            XmlElement digestValueElement = xmlDocument.CreateElement("ds", "DigestValue", URI);
+            digestValueElement.InnerText = Convert.ToBase64String(sha1);
+            certDigestElement.AppendChild(digestMethodElement);
+            certDigestElement.AppendChild(digestValueElement);
+            certElement.AppendChild(certDigestElement);
 
-            XmlElement IssuerSerial = xmlDoc.CreateElement("xades", "IssuerSerial", URI);
-            XmlElement X509IssuerName = xmlDoc.CreateElement("ds", "X509IssuerName", "http://www.w3.org/2000/09/xmldsig#");
-            X509IssuerName.InnerText = certificate.IssuerName.Name;
-            XmlElement X509SerialNumber = xmlDoc.CreateElement("ds", "X509SerialNumber", "http://www.w3.org/2000/09/xmldsig#");
-            X509SerialNumber.InnerText = certificate.SerialNumber;
-            IssuerSerial.AppendChild(X509IssuerName);
-            IssuerSerial.AppendChild(X509SerialNumber);
-            Cert.AppendChild(IssuerSerial);
+            XmlElement issuerSerialElement = xmlDocument.CreateElement("xades", "IssuerSerial", URI);
+            XmlElement x509IssuerNameElement = xmlDocument.CreateElement("ds", "X509IssuerName", "http://www.w3.org/2000/09/xmldsig#");
+            x509IssuerNameElement.InnerText = certificate.IssuerName.Name;
+            XmlElement x509SerialNumberElement = xmlDocument.CreateElement("ds", "X509SerialNumber", "http://www.w3.org/2000/09/xmldsig#");
+            x509SerialNumberElement.InnerText = certificate.SerialNumber;
+            issuerSerialElement.AppendChild(x509IssuerNameElement);
+            issuerSerialElement.AppendChild(x509SerialNumberElement);
+            certElement.AppendChild(issuerSerialElement);
 
-            SigningCertificate.AppendChild(Cert);
-            SignedSignatureProperties.AppendChild(SigningCertificate);
+            signingCertificateElement.AppendChild(certElement);
+            signedSignaturePropertiesElement.AppendChild(signingCertificateElement);
 
-            signaturePropertiesRoot.AppendChild(SignedSignatureProperties);
-            qualifyingPropertiesRoot.AppendChild(signaturePropertiesRoot);
+            signaturePropertiesRootElement.AppendChild(signedSignaturePropertiesElement);
+            qualifyingPropertiesRootElement.AppendChild(signaturePropertiesRootElement);
 
             // /////////////////////////////////
-            XmlElement SignaturePolicyIdentifier = xmlDoc.CreateElement("xades", "SignaturePolicyIdentifier", URI);
-            SignedSignatureProperties.AppendChild(SignaturePolicyIdentifier);
+            XmlElement signaturePolicyIdentifierElement = xmlDocument.CreateElement("xades", "SignaturePolicyIdentifier", URI);
+            signedSignaturePropertiesElement.AppendChild(signaturePolicyIdentifierElement);
 
-            XmlElement SignaturePolicyId = xmlDoc.CreateElement("xades", "SignaturePolicyId", URI);
-            SignaturePolicyIdentifier.AppendChild(SignaturePolicyId);
+            XmlElement signaturePolicyIdElement = xmlDocument.CreateElement("xades", "SignaturePolicyId", URI);
+            signaturePolicyIdentifierElement.AppendChild(signaturePolicyIdElement);
 
-            XmlElement SigPolicyId = xmlDoc.CreateElement("xades", "SigPolicyId", URI);
-            SignaturePolicyId.AppendChild(SigPolicyId);
+            XmlElement sigPolicyIdElement = xmlDocument.CreateElement("xades", "SigPolicyId", URI);
+            signaturePolicyIdElement.AppendChild(sigPolicyIdElement);
 
-            XmlElement Identifier = xmlDoc.CreateElement("xades", "Identifier", URI);
-            Identifier.InnerText = "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
-            SigPolicyId.AppendChild(Identifier);
+            XmlElement identifierElement = xmlDocument.CreateElement("xades", "Identifier", URI);
+            identifierElement.InnerText = "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
+            sigPolicyIdElement.AppendChild(identifierElement);
 
-            XmlElement SigPolicyHash = xmlDoc.CreateElement("xades", "SigPolicyHash", URI);
-            SignaturePolicyId.AppendChild(SigPolicyHash);
+            XmlElement sigPolicyHashElement = xmlDocument.CreateElement("xades", "SigPolicyHash", URI);
+            signaturePolicyIdElement.AppendChild(sigPolicyHashElement);
 
-            DigestMethod = xmlDoc.CreateElement("ds", "DigestMethod", URI);
-            DigestMethod.SetAttribute("Algorithm", "http://www.w3.org/2001/04/xmlenc#sha256");
-            DigestValue = xmlDoc.CreateElement("ds", "DigestValue", URI);
+            digestMethodElement = xmlDocument.CreateElement("ds", "DigestMethod", URI);
+            digestMethodElement.SetAttribute("Algorithm", "http://www.w3.org/2001/04/xmlenc#sha256");
+            digestValueElement = xmlDocument.CreateElement("ds", "DigestValue", URI);
             byte[] shaCertificate = { 0xf1, 0x48, 0x03, 0x50, 0x5c, 0x33, 0x64, 0x29, 0x07, 0x84, 0x43, 0xca, 0x79, 0x6e, 0x59, 0xcc, 0xac, 0xf5, 0x85, 0x4c };
-            DigestValue.InnerText = Convert.ToBase64String(shaCertificate);
-            SigPolicyHash.AppendChild(DigestMethod);
-            SigPolicyHash.AppendChild(DigestValue);
+            digestValueElement.InnerText = Convert.ToBase64String(shaCertificate);
+            sigPolicyHashElement.AppendChild(digestMethodElement);
+            sigPolicyHashElement.AppendChild(digestValueElement);
 
-            XmlElement SignedDataObjectProperties = xmlDoc.CreateElement("xades", "SignedDataObjectProperties", URI);
-            XmlElement DataObjectFormat = xmlDoc.CreateElement("xades", "DataObjectFormat", URI);
-            DataObjectFormat.SetAttribute("ObjectReference", "#r-id-1");
-            signaturePropertiesRoot.AppendChild(SignedDataObjectProperties);
-            SignedDataObjectProperties.AppendChild(DataObjectFormat);
-            XmlElement MimeType = xmlDoc.CreateElement("xades", "MimeType", URI);
-            MimeType.InnerText = "application/octet-stream";
-            DataObjectFormat.AppendChild(MimeType);
+            XmlElement signedDataObjectPropertiesElement = xmlDocument.CreateElement("xades", "SignedDataObjectProperties", URI);
+            XmlElement dataObjectFormatElement = xmlDocument.CreateElement("xades", "DataObjectFormat", URI);
+            dataObjectFormatElement.SetAttribute("ObjectReference", "#r-id-1");
+            signaturePropertiesRootElement.AppendChild(signedDataObjectPropertiesElement);
+            signedDataObjectPropertiesElement.AppendChild(dataObjectFormatElement);
+            XmlElement mimeTypeElement = xmlDocument.CreateElement("xades", "MimeType", URI);
+            mimeTypeElement.InnerText = "application/octet-stream";
+            dataObjectFormatElement.AppendChild(mimeTypeElement);
             // /////////////////////////////////////////////////////////////
 
             DataObject dataObject = new DataObject
             {
-                Data = qualifyingPropertiesRoot.SelectNodes("."),
+                Data = qualifyingPropertiesRootElement.SelectNodes("."),
             };
 
             signedXml.AddObject(dataObject);
@@ -336,8 +307,8 @@ namespace Tribunet.Atv.TerminalApp
             reference2.Id = "R1";
             reference2.Type = "http://uri.etsi.org/01903#SignedProperties";
             reference2.Uri = "";
-            XmlDsigXPathTransform XPathTransform = CreateXPathTransform("ValorPath");
-            reference2.AddTransform(XPathTransform);
+            XmlDsigXPathTransform xPathTransform = CreateXPathTransform("ValorPath");
+            reference2.AddTransform(xPathTransform);
             reference2.DigestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
             reference2.AddTransform(new XmlDsigExcC14NTransform());
             signedXml.AddReference(reference2);
@@ -348,7 +319,7 @@ namespace Tribunet.Atv.TerminalApp
             reference2.Type = "http://uri.etsi.org/01903#SignedProperties";
             reference2.Uri = "";
             // reference2.AddTransform(new XmlDsigExcC14NTransform());
-            XPathTransform = CreateXPathTransform("ValorPath");
+            xPathTransform = CreateXPathTransform("ValorPath");
             // reference2.AddTransform(XPathTransform);
             reference2.DigestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
             reference2.AddTransform(new XmlDsigExcC14NTransform());
@@ -358,27 +329,47 @@ namespace Tribunet.Atv.TerminalApp
 
             // Get the XML representation of the signature and save
             // it to an XmlElement object.
-            XmlElement xmlDigitalSignature = signedXml.GetXml();
+            XmlElement xmlDigitalSignatureElement = signedXml.GetXml();
 
-            xmlDoc.DocumentElement.AppendChild(xmlDoc.ImportNode(xmlDigitalSignature, true));
+            xmlDocument.DocumentElement.AppendChild(xmlDocument.ImportNode(xmlDigitalSignatureElement, true));
 
             bool checkSign = signedXml.CheckSignature();
 
             //return xmlDoc.OuterXml;
-            return xmlDoc;
+            return xmlDocument;
 
         }
-        private static XmlDsigXPathTransform CreateXPathTransform(string XPathString)
+        private static XmlDsigXPathTransform CreateXPathTransform(string xPathString)
         {
-            XmlDocument doc = new XmlDocument();
-            XmlElement xPathElem = doc.CreateElement("XPath");
-            xPathElem.InnerText = XPathString;
+            XmlDocument xmlDocument = new XmlDocument();
+            XmlElement xPathElement = xmlDocument.CreateElement("XPath");
+            xPathElement.InnerText = xPathString;
             XmlDsigXPathTransform xForm = new XmlDsigXPathTransform();
-            xForm.LoadInnerXml(xPathElem.SelectNodes("."));
+            xForm.LoadInnerXml(xPathElement.SelectNodes("."));
             return xForm;
         }
 
 
+        //var xadesService = new XadesService();
+        //var signatureParameters = new SignatureParameters();
+
+        //signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
+        //signatureParameters.SignaturePolicyInfo.PolicyIdentifier = "http://www.facturae.es/politica_de_firma_formato_facturae/politica_de_firma_formato_facturae_v3_1.pdf";
+        //signatureParameters.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
+        //signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
+        //signatureParameters.DataFormat = new DataFormat();
+        //signatureParameters.DataFormat.MimeType = "text/xml";
+        //signatureParameters.SignerRole = new SignerRole();
+        //signatureParameters.SignerRole.ClaimedRoles.Add("emisor");
+
+        //using (signatureParameters.Signer = new Signer(CertUtil.VerifyCertificate()))
+        //{
+        //    using (FileStream fs = new FileStream(ficheroFactura, FileMode.Open))
+        //    {
+        //        var docFirmado = xadesService.Sign(fs, signatureParameters);
+
+        //    }
+        //}
         #endregion
 
 
