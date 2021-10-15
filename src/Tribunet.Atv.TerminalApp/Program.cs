@@ -77,8 +77,13 @@ namespace Tribunet.Atv.TerminalApp
 
             // ==========
             // TODO: Sign the XML
+            var certificateFilePath = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_FILE_PATH");
             var certificateSubject = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_SUBJECT");
-            X509Certificate2 certificate = GetCertificate(certificateSubject);
+            var certificatePassword = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_PASSWORD");
+            
+            X509Certificate2 certificate = (!string.IsNullOrEmpty(certificateFilePath) && File.Exists(certificateFilePath))
+                ? GetCertificateFromFilePath(certificateFilePath, certificatePassword)
+                : GetCertificateStore(certificateSubject);
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.PreserveWhitespace = true;
             xmlDocument.Load(comprobanteStream);
@@ -183,11 +188,18 @@ namespace Tribunet.Atv.TerminalApp
             Debug.WriteLine("Hello World!");
         }
 
+        private static X509Certificate2 GetCertificateFromFilePath(string filePath, string password)
+        {
+            X509Certificate2 cert = new X509Certificate2(filePath, password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
+            //RSACryptoServiceProvider crypt = (RSACryptoServiceProvider)cert.PrivateKey;
+            return cert;
+        }
+
 
         #region XAdES-EPES Signer
 
         // 1. - Seleccion del certificado
-        public static X509Certificate2 GetCertificate(string subject)
+        public static X509Certificate2 GetCertificateStore(string subject)
         {
             X509Store store = new X509Store(StoreLocation.CurrentUser);
             store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);

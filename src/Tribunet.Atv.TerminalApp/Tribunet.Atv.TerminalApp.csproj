@@ -10,4 +10,7 @@
     <ProjectReference Include="..\Tribunet.Atv\Tribunet.Atv.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.Xml " Version="5.0.0" />
+  </ItemGroup>
 </Project>
