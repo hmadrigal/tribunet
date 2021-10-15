@@ -188,15 +188,14 @@ namespace Tribunet.Atv.TerminalApp
             Debug.WriteLine("Hello World!");
         }
 
+        #region XAdES-EPES Signer (dotnet framework)
+
         private static X509Certificate2 GetCertificateFromFilePath(string filePath, string password)
         {
             X509Certificate2 cert = new X509Certificate2(filePath, password, X509KeyStorageFlags.Exportable | X509KeyStorageFlags.PersistKeySet);
             //RSACryptoServiceProvider crypt = (RSACryptoServiceProvider)cert.PrivateKey;
             return cert;
         }
-
-
-        #region XAdES-EPES Signer
 
         // 1. - Seleccion del certificado
         public static X509Certificate2 GetCertificateStore(string subject)
