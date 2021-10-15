@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Security.Cryptography.X509Certificates;
-using System.Security.Cryptography.Xml;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
 using FirmaXadesNetCore;
 using FirmaXadesNetCore.Signature.Parameters;
-using Microsoft.Xades;
 using Tribunet.Atv.ApiClient.Api;
 using Tribunet.Atv.ApiClient.Authenticator;
 using Tribunet.Atv.ApiClient.Client;
@@ -74,7 +71,7 @@ namespace Tribunet.Atv.TerminalApp
             comprobanteStream.Seek(0, SeekOrigin.Begin);
 
             // ==========
-            // TODO: Sign the XML
+            // Sign the XML
             var certificateFilePath = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_FILE_PATH");
             var certificateSubject = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_SUBJECT");
             var certificatePassword = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_PASSWORD");
@@ -104,7 +101,7 @@ namespace Tribunet.Atv.TerminalApp
             var xmlSignedComprobante = encoding.GetString(signedComprobanteStream.ToArray());
 
             // ==========
-            // validates the XML
+            // validates the XML against XSD
             var xdsValidationResult = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
 
@@ -138,7 +135,7 @@ namespace Tribunet.Atv.TerminalApp
             xmlSettings.Schemas.Add(xmlSchemaSet);
 
             // Create the XmlReader object.
-            var textReader = new System.IO.StreamReader(comprobanteStream);
+            var textReader = new System.IO.StreamReader(signedComprobanteStream);
             XmlReader reader = XmlReader.Create(textReader, xmlSettings);
 
             // Parse the file
