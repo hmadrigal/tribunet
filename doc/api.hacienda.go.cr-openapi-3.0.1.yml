@@ -1,0 +1,121 @@
+openapi: "3.0.2"
+info:
+  title: API Ministerio de Hacienda
+  version: "1.0"
+servers:
+  - url: https://api.hacienda.go.cr
+paths:
+  /fe/ae:
+    get:
+      description: |
+        Permite obtener el nombre, el tipo de identificación, el régimen, la situación tributaria y las actividades económicas asociadas a un contribuyente, usando como parámetro el número de identificación (sin hacer uso de guiones).  Para la consulta de identificaciones físicas nacionales no es necesario incluir el 0 como primer dígito. En el caso de las identificaciones jurídicas es necesario el uso de los primeros 10 dígitos, sin utilizar los dos últimos dígitos verificadores.
+        Identificaciones soportadas:
+
+        1. Físicas nacionales
+        2. Jurídicas nacionales
+        3. D IMEX
+        4. Nites tributarios
+      parameters:
+        - name: identificacion
+          in: query
+          required: true
+          schema:
+            type: string
+            example: 2100042005
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SituacionTributaria"
+components:
+  schemas:
+    TiposDeIdentificacion:
+      type: string
+      description: |
+        Tipos de identificación
+          - 01 = Persona física costarricense
+          - 02 = Persona jurídica costarricense estatal (pública) o persona jurídica costarricense privada
+          - 03 = Persona física extranjera (DIMEX)
+          - 04 = Número de identificación tributario para personas físicas (NITE)
+      enum:
+        - "01"
+        - "02"
+        - "03"
+        - "04"
+    TiposDeRegimenes:
+      type: integer
+      description: |
+        Tipos de regímenes
+
+          - 0 = No aplica
+          - 1 = Régimen tradicional
+          - 2 = Régimen simplificado
+      enum:
+        - 0
+        - 1
+        - 2
+    EstadoDeLasActividadesEconomicas:
+      type: string
+      description: |
+        Estado de las actividades económicas
+
+        - A = Activa
+        - I = Inactiva
+      enum:
+        - "A"
+        - "I"
+    TipoDeActividadesEconomicas:
+      type: string
+      description: |
+        Tipo de actividades económicas
+
+        - P = Primaria
+        - S = Secundaria
+      enum:
+        - "P"
+        - "S"
+    SioNo:
+      type: string
+      enum:
+        - "SI"
+        - "NO"
+    ActividadEconomica:
+      type: object
+      properties:
+        estado:
+          $ref: "#/components/schemas/EstadoDeLasActividadesEconomicas"
+        tipo:
+          $ref: "#/components/schemas/TipoDeActividadesEconomicas"
+        codigo:
+          type: integer
+        descripcion:
+          type: string
+    SituacionTributaria:
+      type: object
+      properties:
+        nombre:
+          type: string
+        tipoIdentificacion:
+          $ref: "#/components/schemas/TiposDeIdentificacion"
+        regimen:
+          type: object
+          properties:
+            codigo:
+              $ref: "#/components/schemas/TiposDeRegimenes"
+            description:
+              type: string
+        situación:
+          type: object
+          properties:
+            moroso:
+              $ref: "#/components/schemas/SioNo"
+            omiso:
+              $ref: "#/components/schemas/SioNo"
+            estado:
+              type: string
+            administracionTributaria:
+              type: string
+        actividades:
+          type: array

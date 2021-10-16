@@ -1,0 +1,18 @@
+{
+  "profiles": {
+    "Tribunet.Atv.TerminalApp": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ATV_XADES_EPES_CERT_FILE_PATH": "D:\\projects\\github\\tribunet\\src\\Tribunet.Atv.TerminalApp\\Assets\\020578084511.p12",
+        "ATV_XADES_EPES_CERT_PASSWORD": "2812",
+        "ATV_XADES_EPES_CERT_SUBJECT": "CN=NEOTECNOLOGIAS SOCIEDAD ANONIMA, OU=CPJ, O=PERSONA JURIDICA, C=CR, G=NEOTECNOLOGIAS SOCIEDAD ANONIMA, SN=\"\", SERIALNUMBER=CPJ-3-101-408861",
+        "ATV_OAUTH2_ACCESS_TOKEN_URL": "https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token",
+        "ATV_OAUTH2_CLIENT_ID": "api-stag",
+        "ATV_OAUTH2_USERNAME": "cpf-02-0578-0845@stag.comprobanteselectronicos.go.cr",
+        "ATV_OAUTH2_REFRESH_TOKEN_URL": "https://idp.comprobanteselectronicos.go.cr/auth/realms/rut-stag/protocol/openid-connect/token",
+        "ATV_OAUTH2_PASSWORD": "RV#9]c4:9{*U|]yNJ?^=",
+        "ATV_OAUTH2_CLIENT_SECRET": ""
+      }
+    }
+  }
+}

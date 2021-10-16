@@ -30,27 +30,46 @@ namespace Tribunet.Atv.TerminalApp
 
             // ==========
             // create `comprobante electronico`
+            var numeroConsecutivo = new NumeroConsecutivo(
+                        tipoComprobante: TipoComprobante.FacturaElectronica,
+                        oficinaId: 1,
+                        puntoDeVentaId: 1,
+                        consecutivoComprobante: Convert.ToInt32(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
+                    );
             var comprobanteElectronico = new Models.FacturaElectronica_V_4_2.FacturaElectronica
             {
                 Clave = new ClaveNumerica(
                     codigoPais: 506,
                     fechaCreacion: localNow,
                     cedulaEmisor: "110910312",
-                    numeracionConsecutivo: new NumeroConsecutivo(
-                        tipoComprobante: TipoComprobante.FacturaElectronica,
-                        oficinaId: 1,
-                        puntoDeVentaId: 1,
-                        consecutivoComprobante: Convert.ToInt32(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
-                    ),
+                    numeracionConsecutivo: numeroConsecutivo,
                     situacion: SituacionDelComprobante.Normal,
                     codigoSeguridad: 1
                 ),
+                NumeroConsecutivo = numeroConsecutivo,
+                FechaEmision = localNow,
                 Emisor = new EmisorType
                 {
                     Identificacion = new IdentificacionType
                     {
                         Tipo = IdentificacionTypeTipo.Item01,
                         Numero = "110910312",
+                    },
+                    Nombre = "Herber Fernando Madrigal Bendles",
+                    CorreoElectronico = "hfmad@hotmail.com",
+                    Telefono = new TelefonoType
+                    {
+                        CodigoPais = "506",
+                        NumTelefono = "12345678"
+                    },
+                    NombreComercial = "Herber Madrigal Bendles",
+                    Ubicacion = new UbicacionType
+                    {
+                        Provincia = "2",
+                        Canton = "03",
+                        Distrito = "04",
+                        Barrio = "05",
+                        OtrasSenas = "Casa beige"
                     }
                 },
                 Receptor = new ReceptorType
@@ -58,9 +77,17 @@ namespace Tribunet.Atv.TerminalApp
                     Identificacion = new IdentificacionType
                     {
                         Tipo = IdentificacionTypeTipo.Item01,
-                        Numero = "1997588"
-                    }
-                }
+                        Numero = "109970588"
+                    },
+                    Nombre = "Kazy Myra Zoyla",
+                    CorreoElectronico = "nmadrigal@fua.net",
+                    Telefono = new TelefonoType
+                    {
+                        CodigoPais = "506",
+                        NumTelefono = "12345678"
+                    },
+                },
+                MedioPago = new FacturaElectronicaMedioPago[] { FacturaElectronicaMedioPago.Item01 }, 
             };
 
             // ==========
