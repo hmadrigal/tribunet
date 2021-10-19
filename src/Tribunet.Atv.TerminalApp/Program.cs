@@ -291,9 +291,7 @@ namespace Tribunet.Atv.TerminalApp
             var recepcionApiClient = new RecepcionApi(config);
             try
             {
-                // Recibe el comprobante electrónico o respuesta del receptor.
                 await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
-                // var response = await recepcionApiClient.PostReceptionWithHttpInfoAsync(recepcionPostRequest);
             }
             catch (ApiException e)
             {
@@ -304,6 +302,9 @@ namespace Tribunet.Atv.TerminalApp
                 Debug.WriteLine("Status Code: " + e.ErrorCode);
                 Debug.WriteLine(e.StackTrace);
             }
+
+
+            var recepcionGetResponse = await recepcionApiClient.GetReceptionAsync(comprobanteElectronico.Clave);
 
             // ==========
             // TODO:  Checks status of the sent `comprobante electronico`

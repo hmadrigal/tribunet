@@ -160,7 +160,7 @@ paths:
                 type: string
                 example: El comprobante con la Clave [50601011600310112345600100010100000000011999999999] ya fue recibido.
             validation-exception:
-              description: ndica si es un error con el `body` enviado del entity.
+              description: Indica si es un error con el `body` enviado del entity.
               schema:
                 type: boolean
                 example: true
@@ -307,7 +307,7 @@ components:
             define en [http://tools.ietf.org/html/rfc3339#section-5.6]
             (date-time).
           type: string
-        indEstado:
+        "ind-estado":
           type: string
           enum:
             - RECIBIDO
@@ -318,13 +318,13 @@ components:
         callbackUrl:
           description: URL utilizado para que Hacienda envíe la respuesta de aceptación o rechazo. Muestra el URL que fue enviado por el obligado tributario.
           type: string
-        respuestaXml:
+        "respuesta-xml":
           description: Respuesta de aceptación o rechazo en XML firmada por el Ministerio de Hacienda utilizando XAdES-XL. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8.
           type: string
       required:
         - clave
         - fecha
-        - indEstado
+        - "ind-estado"
     RecepcionPostRequest:
       title: RecepcionPostRequest
       type: object
