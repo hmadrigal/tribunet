@@ -10,7 +10,6 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using FirmaXadesNetCore;
 using FirmaXadesNetCore.Signature.Parameters;
-using Org.BouncyCastle.Asn1.Misc;
 using Tribunet.Atv.ApiClient.Api;
 using Tribunet.Atv.ApiClient.Authenticator;
 using Tribunet.Atv.ApiClient.Client;
@@ -26,7 +25,7 @@ namespace Tribunet.Atv.TerminalApp
         {
             var localNow = DateTime.Now;
             var utcNow = DateTime.UtcNow;
-            var comprobanteStream = new System.IO.MemoryStream();
+            var comprobanteStream = new MemoryStream();
 
             // ==========
             // create `comprobante electronico`
@@ -36,7 +35,7 @@ namespace Tribunet.Atv.TerminalApp
                         puntoDeVentaId: 1,
                         consecutivoComprobante: Convert.ToInt32(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                     );
-            var comprobanteElectronico = new Models.FacturaElectronica_V_4_2.FacturaElectronica
+            var comprobanteElectronico = new FacturaElectronica
             {
                 Clave = new ClaveNumerica(
                     codigoPais: 506,
@@ -92,7 +91,7 @@ namespace Tribunet.Atv.TerminalApp
 
             // ==========
             // serializes `comprobante electronico` into XML (represented by a Stream)
-            var xmlSerializer = new XmlSerializer(typeof(Models.FacturaElectronica_V_4_2.FacturaElectronica));
+            var xmlSerializer = new XmlSerializer(typeof(FacturaElectronica));
             var textWriter = new StreamWriter(comprobanteStream);
             xmlSerializer.Serialize(textWriter, comprobanteElectronico);
             comprobanteStream.Flush();
