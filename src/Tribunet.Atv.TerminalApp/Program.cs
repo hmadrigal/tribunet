@@ -15,6 +15,7 @@ using Tribunet.Atv.ApiClient.Authenticator;
 using Tribunet.Atv.ApiClient.Client;
 using Tribunet.Atv.ApiClient.Model;
 using Tribunet.Atv.Models.FacturaElectronica_V_4_2;
+using Tribunet.Atv.Models.MensajeHacienda_V4_2;
 using Tribunet.Atv.Services;
 
 namespace Tribunet.Atv.TerminalApp
@@ -26,6 +27,7 @@ namespace Tribunet.Atv.TerminalApp
             var localNow = DateTime.Now;
             var utcNow = DateTime.UtcNow;
             var comprobanteStream = new MemoryStream();
+            var encoding = System.Text.Encoding.UTF8;
 
             // ==========
             // create `comprobante electronico`
@@ -171,7 +173,6 @@ namespace Tribunet.Atv.TerminalApp
 
 
             //// Gets XML Text
-            //var encoding = System.Text.Encoding.UTF8;
             //var xmlSignedComprobante = encoding.GetString(signedComprobanteStream.ToArray());
 
             // ==========
@@ -309,9 +310,17 @@ namespace Tribunet.Atv.TerminalApp
             {
                 recepcionGetResponse = await recepcionApiClient.GetReceptionAsync(comprobanteElectronico.Clave);
                 await Task.Delay(TimeSpan.FromSeconds(3));
-            } while (recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.PROCESANDO);
-            
+            } while (recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.PROCESANDO
+            || recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.RECIBIDO );
 
+            if (recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.ERROR
+                || recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.RECHAZADO)
+            {
+                var respuestaXml = encoding.GetString( Convert.FromBase64String(recepcionGetResponse.RespuestaXml));
+                XmlSerializer serializer = new XmlSerializer(typeof(MensajeHacienda));
+                var mensajeHacienda = serializer.Deserialize(new StringReader(respuestaXml)) as MensajeHacienda;
+            }
+            
 
             // ==========
             // TODO:  Checks status of the sent `comprobante electronico`
