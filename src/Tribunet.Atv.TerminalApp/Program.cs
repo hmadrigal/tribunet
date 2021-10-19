@@ -304,7 +304,14 @@ namespace Tribunet.Atv.TerminalApp
             }
 
 
-            var recepcionGetResponse = await recepcionApiClient.GetReceptionAsync(comprobanteElectronico.Clave);
+            RecepcionGetResponse recepcionGetResponse = default;
+            do
+            {
+                recepcionGetResponse = await recepcionApiClient.GetReceptionAsync(comprobanteElectronico.Clave);
+                await Task.Delay(TimeSpan.FromSeconds(3));
+            } while (recepcionGetResponse.IndEstado == RecepcionGetResponse.IndEstadoEnum.PROCESANDO);
+            
+
 
             // ==========
             // TODO:  Checks status of the sent `comprobante electronico`

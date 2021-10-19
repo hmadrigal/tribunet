@@ -74,7 +74,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// <summary>
         /// Gets or Sets IndEstado
         /// </summary>
-        [DataMember(Name = "indEstado", IsRequired = true, EmitDefaultValue = false)]
+        [DataMember(Name = "ind-estado", IsRequired = true, EmitDefaultValue = false)]
         public IndEstadoEnum IndEstado { get; set; }
         /// <summary>
         /// Initializes a new instance of the <see cref="RecepcionGetResponse" /> class.
@@ -122,7 +122,7 @@ namespace Tribunet.Atv.ApiClient.Model
         /// Respuesta de aceptación o rechazo en XML firmada por el Ministerio de Hacienda utilizando XAdES-XL. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8.
         /// </summary>
         /// <value>Respuesta de aceptación o rechazo en XML firmada por el Ministerio de Hacienda utilizando XAdES-XL. El texto del XML debe convertirse a un byte array y codificarse en Base64. El mapa de caracteres a utilizar en el XML y en la codificación Base64 es UTF8.</value>
-        [DataMember(Name = "respuestaXml", EmitDefaultValue = false)]
+        [DataMember(Name = "respuesta-xml", EmitDefaultValue = false)]
         public string RespuestaXml { get; set; }
 
         /// <summary>

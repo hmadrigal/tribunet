@@ -113,7 +113,7 @@ namespace Tribunet.Atv.ApiClient.Client
         /// </summary>
         /// <value>X509 Certificate collection.</value>
         X509CertificateCollection ClientCertificates { get; }
-
+        
         OAuth2PasswordAuthenticatorOptions OAuth2PasswordAuthenticatorOptions { get; set; }
     }
 }

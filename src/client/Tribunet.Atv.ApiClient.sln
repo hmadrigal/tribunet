@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribunet.Atv.ApiClient", "src\Tribunet.Atv.ApiClient\Tribunet.Atv.ApiClient.csproj", "{1F7C00D7-7517-41E1-8EDC-2F57D16164E6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribunet.Atv.ApiClient", "src\Tribunet.Atv.ApiClient\Tribunet.Atv.ApiClient.csproj", "{ECCE22F8-99F1-48C4-9E09-AAADBC51E45A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tribunet.Atv.ApiClient.Test", "src\Tribunet.Atv.ApiClient.Test\Tribunet.Atv.ApiClient.Test.csproj", "{19F1DEBC-DE5E-4517-8062-F000CD499087}"
 EndProject
@@ -12,10 +12,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{1F7C00D7-7517-41E1-8EDC-2F57D16164E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1F7C00D7-7517-41E1-8EDC-2F57D16164E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1F7C00D7-7517-41E1-8EDC-2F57D16164E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1F7C00D7-7517-41E1-8EDC-2F57D16164E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECCE22F8-99F1-48C4-9E09-AAADBC51E45A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECCE22F8-99F1-48C4-9E09-AAADBC51E45A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECCE22F8-99F1-48C4-9E09-AAADBC51E45A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECCE22F8-99F1-48C4-9E09-AAADBC51E45A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{19F1DEBC-DE5E-4517-8062-F000CD499087}.Release|Any CPU.ActiveCfg = Release|Any CPU

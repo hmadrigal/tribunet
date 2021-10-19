@@ -152,7 +152,8 @@ void (empty response body)
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-| **201** | Se recibió correctamente el comprobante electrónico o respuesta del receptor, queda pendiente la validación del mismo y el envío de la respuesta de parte de Hacienda. |  -  |
+| **201** | Se recibió correctamente el comprobante electrónico o respuesta del receptor, queda pendiente la validación del mismo y el envío de la respuesta de parte de Hacienda. |  * X-Ratelimit-Limit - Número de requests permitidos en el período de tiempo actual. <br>  * X-Ratelimit-Remaining - Número de requests restantes en el período de tiempo actual. <br>  * X-Ratelimit-Reset - Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds). <br>  |
+| **400** | Ocurrió algún error de validación. |  * X-Error-Cause - Muestra la causa del error. <br>  * validation-exception - Indica si es un error con el &#x60;body&#x60; enviado del entity. <br>  * X-Ratelimit-Limit - Número de requests permitidos en el período de tiempo actual. <br>  * X-Ratelimit-Remaining - Número de requests restantes en el período de tiempo actual. <br>  * X-Ratelimit-Reset - Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds). <br>  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 

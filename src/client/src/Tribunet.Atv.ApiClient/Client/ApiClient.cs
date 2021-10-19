@@ -431,7 +431,7 @@ namespace Tribunet.Atv.ApiClient.Client
         private ApiResponse<T> Exec<T>(RestRequest req, IReadableConfiguration configuration)
         {
             RestClient client = new RestClient(_baseUrl);
-
+            
             if (configuration.OAuth2PasswordAuthenticatorOptions != null)
                 client.Authenticator =
                     new OAuth2PasswordAuthenticator(configuration.OAuth2PasswordAuthenticatorOptions);
