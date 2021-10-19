@@ -138,6 +138,44 @@ paths:
       responses:
         "201":
           description: Se recibió correctamente el comprobante electrónico o respuesta del receptor, queda pendiente la validación del mismo y el envío de la respuesta de parte de Hacienda.
+          headers:
+            X-Ratelimit-Limit:
+              description: Número de requests permitidos en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
+        "400":
+          description: Ocurrió algún error de validación.
+          headers:
+            X-Error-Cause:
+              description: Muestra la causa del error.
+              schema:
+                type: string
+                example: El comprobante con la Clave [50601011600310112345600100010100000000011999999999] ya fue recibido.
+            validation-exception:
+              description: ndica si es un error con el `body` enviado del entity.
+              schema:
+                type: boolean
+                example: true
+            X-Ratelimit-Limit:
+              description: Número de requests permitidos en el período de tiempo actual.
+              schema:
+                type: integer
+            X-Ratelimit-Remaining:
+              description: "Número de requests restantes en el período de tiempo actual."
+              schema:
+                type: integer
+            X-Ratelimit-Reset:
+              description: "Tiempo restante antes de que los límites se reinicien (UTC Epoch Seconds)."
+              schema:
+                type: integer
   /comprobantes:
     summary: Comprobantes electrónicos que ha enviado el obligado tributario.
     get:

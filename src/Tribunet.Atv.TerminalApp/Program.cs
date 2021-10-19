@@ -175,6 +175,30 @@ namespace Tribunet.Atv.TerminalApp
             //var xmlSignedComprobante = encoding.GetString(signedComprobanteStream.ToArray());
 
             // ==========
+            // Sign the XML
+            var certificateFilePath = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_FILE_PATH");
+            var certificateSubject = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_SUBJECT");
+            var certificatePassword = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_PASSWORD");
+
+            X509Certificate2 certificate = (!string.IsNullOrEmpty(certificateFilePath) && File.Exists(certificateFilePath))
+                ? GetCertificateFromFilePath(certificateFilePath, certificatePassword)
+                : GetCertificateStore(certificateSubject);
+
+            XadesService xadesService = new XadesService();
+            SignatureParameters signatureParameters = new SignatureParameters();
+            signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
+            signatureParameters.SignaturePolicyInfo.PolicyIdentifier =
+                "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
+            signatureParameters.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
+            signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
+            signatureParameters.DataFormat = new DataFormat();
+            signatureParameters.Signer = new FirmaXadesNetCore.Crypto.Signer(certificate);
+            FirmaXadesNetCore.Signature.SignatureDocument signatureDocument = xadesService.Sign(comprobanteStream, signatureParameters);
+            var signedComprobanteStream = new MemoryStream();
+            signatureDocument.Save(signedComprobanteStream);
+            signedComprobanteStream.Seek(0, SeekOrigin.Begin);
+
+            // ==========
             // validates the XML against XSD
             var xsdValidationResults = Enum.GetNames(typeof(XmlSeverityType)).ToDictionary(n => n, _ => new HashSet<string>(), StringComparer.InvariantCultureIgnoreCase);
             var xmlResourceAssembly = typeof(ModelDataProvider).Assembly;
@@ -209,15 +233,16 @@ namespace Tribunet.Atv.TerminalApp
             xmlSettings.Schemas.Add(xmlSchemaSet);
 
             // Create the XmlReader object.
-            var textReader = new System.IO.StreamReader(comprobanteStream);
+            var textReader = new System.IO.StreamReader(signedComprobanteStream);
             XmlReader reader = XmlReader.Create(textReader, xmlSettings);
 
             // Parse the file
             while (reader.Read()) { }
             xmlSettings.ValidationEventHandler -= ValidationCallBack;
             comprobanteStream.Seek(0, SeekOrigin.Begin);
+            signedComprobanteStream.Seek(0, SeekOrigin.Begin);
 
-            var hasXsdErrors = xsdValidationResults.Any(kvp => kvp.Value.Count > 0);
+            var hasXsdErrors = xsdValidationResults.Any(kvp => nameof(XmlSeverityType.Error) == kvp.Key && kvp.Value.Count > 0);
             if (hasXsdErrors)
             {
                 foreach (var xsdValidationResult in xsdValidationResults)
@@ -226,29 +251,7 @@ namespace Tribunet.Atv.TerminalApp
                 return;
             }
 
-            // ==========
-            // Sign the XML
-            var certificateFilePath = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_FILE_PATH");
-            var certificateSubject = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_SUBJECT");
-            var certificatePassword = Environment.GetEnvironmentVariable("ATV_XADES_EPES_CERT_PASSWORD");
-
-            X509Certificate2 certificate = (!string.IsNullOrEmpty(certificateFilePath) && File.Exists(certificateFilePath))
-                ? GetCertificateFromFilePath(certificateFilePath, certificatePassword)
-                : GetCertificateStore(certificateSubject);
-
-            XadesService xadesService = new XadesService();
-            SignatureParameters signatureParameters = new SignatureParameters();
-            signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
-            signatureParameters.SignaturePolicyInfo.PolicyIdentifier =
-                "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
-            signatureParameters.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
-            signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
-            signatureParameters.DataFormat = new DataFormat();
-            signatureParameters.Signer = new FirmaXadesNetCore.Crypto.Signer(certificate);
-            FirmaXadesNetCore.Signature.SignatureDocument signatureDocument = xadesService.Sign(comprobanteStream, signatureParameters);
-            var signedComprobanteStream = new MemoryStream();
-            signatureDocument.Save(signedComprobanteStream);
-            signedComprobanteStream.Seek(0, SeekOrigin.Begin);
+            
 
             // ==========
             // TODO: Sends the `comprobante electronico` 
@@ -285,7 +288,8 @@ namespace Tribunet.Atv.TerminalApp
             try
             {
                 // Recibe el comprobante electrónico o respuesta del receptor.
-                await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
+                //await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
+                var response = await recepcionApiClient.PostReceptionWithHttpInfoAsync(recepcionPostRequest);
             }
             catch (ApiException e)
             {
