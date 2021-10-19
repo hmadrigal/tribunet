@@ -35,58 +35,130 @@ namespace Tribunet.Atv.TerminalApp
                         puntoDeVentaId: 1,
                         consecutivoComprobante: Convert.ToInt32(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                     );
-            var comprobanteElectronico = new FacturaElectronica
-            {
-                Clave = new ClaveNumerica(
+            var claveNumerica = new ClaveNumerica(
                     codigoPais: 506,
                     fechaCreacion: localNow,
                     cedulaEmisor: "110910312",
                     numeracionConsecutivo: numeroConsecutivo,
                     situacion: SituacionDelComprobante.Normal,
                     codigoSeguridad: 1
-                ),
+                );
+
+            ClaveNumerica cn = "50618102100310137332200100001010000002527105558162";
+            claveNumerica = cn;
+            NumeroConsecutivo nc = "00100001010000002527";
+            numeroConsecutivo = nc;
+
+            var comprobanteElectronico = new FacturaElectronica
+            {
+                //Clave = claveNumerica,
+                Clave = cn,
                 NumeroConsecutivo = numeroConsecutivo,
                 FechaEmision = localNow,
                 Emisor = new EmisorType
                 {
+                    Nombre = "Asociados Dentales Larios Guzman S.A",
+                    NombreComercial = "LG DENTAL CARE. Cosmetic and Restorative Center",
                     Identificacion = new IdentificacionType
                     {
-                        Tipo = IdentificacionTypeTipo.Item01,
-                        Numero = "110910312",
+                        Tipo = IdentificacionTypeTipo.Item02,
+                        Numero = "3101373322",
+
                     },
-                    Nombre = "Herber Fernando Madrigal Bendles",
-                    CorreoElectronico = "hfmad@hotmail.com",
+                    CorreoElectronico = "drlarios@lgdental.com",
                     Telefono = new TelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = "12345678"
+                        NumTelefono = "22381229"
                     },
-                    NombreComercial = "Herber Madrigal Bendles",
                     Ubicacion = new UbicacionType
                     {
-                        Provincia = "2",
-                        Canton = "03",
-                        Distrito = "04",
-                        Barrio = "05",
-                        OtrasSenas = "Casa beige"
+                        Provincia = "4",
+                        Canton = "01",
+                        Distrito = "03",
+                        Barrio = "02",
+                        OtrasSenas = "250mts oeste Liceo Samuel Saenz Flores. San Jorge de Heredia"
                     }
                 },
                 Receptor = new ReceptorType
                 {
+                    Nombre = "HERBER FERNANDO MADRIGAL BENDLES",
                     Identificacion = new IdentificacionType
                     {
                         Tipo = IdentificacionTypeTipo.Item01,
                         Numero = "109970588"
                     },
-                    Nombre = "Kazy Myra Zoyla",
                     CorreoElectronico = "nmadrigal@fua.net",
                     Telefono = new TelefonoType
                     {
                         CodigoPais = "506",
-                        NumTelefono = "12345678"
+                        NumTelefono = "88837555 "
+                    },
+                    Ubicacion = new UbicacionType
+                    {
+                        Provincia = "2",
+                        Canton = "03",
+                        Distrito = "01",
+                        OtrasSenas = "Grecia"
+                    }
+                },
+                CondicionVenta = FacturaElectronicaCondicionVenta.Item01,
+                MedioPago = new FacturaElectronicaMedioPago[] { FacturaElectronicaMedioPago.Item01 },
+                DetalleServicio = new[]
+                {
+                    new FacturaElectronicaLineaDetalle
+                    {
+                        NumeroLinea = "1",
+                        Codigo= new []{ new CodigoType{ Tipo = CodigoTypeTipo.Item01, Codigo = "07" } },
+                        Cantidad = 1,
+                        UnidadMedida = UnidadMedidaType.Sp,
+                        Detalle = "Profilaxis/Raspado Utrasonico",
+                        PrecioUnitario = 50000.00m,
+                        SubTotal = 50000.00m,
+                        MontoTotal = 50000.00m,
+                        Impuesto = new[]
+                        {
+                            new ImpuestoType { Codigo = ImpuestoTypeCodigo.Item01, Tarifa = 4, Monto = 2000.00m },
+                        },
+                        MontoTotalLinea = 52000.00m,
+                    },
+                    new FacturaElectronicaLineaDetalle
+                    {
+                        NumeroLinea = "1",
+                        Codigo= new []{ new CodigoType{ Tipo = CodigoTypeTipo.Item01, Codigo = "07" } },
+                        Cantidad = 1,
+                        UnidadMedida = UnidadMedidaType.Sp,
+                        Detalle = "Profilaxis/Raspado Utrasonico",
+                        PrecioUnitario = 50000.00m,
+                        SubTotal = 50000.00m,
+                        MontoTotal = 50000.00m,
+                        Impuesto = new[]
+                        {
+                            new ImpuestoType { Codigo = ImpuestoTypeCodigo.Item01, Tarifa = 4, Monto = 2000.00m },
+                        },
+                        MontoTotalLinea = 52000.00m,
                     },
                 },
-                MedioPago = new FacturaElectronicaMedioPago[] { FacturaElectronicaMedioPago.Item01 }, 
+                ResumenFactura = new FacturaElectronicaResumenFactura
+                {
+                    CodigoMoneda = FacturaElectronicaResumenFacturaCodigoMoneda.CRC,
+                    TipoCambio = 1,
+                    TotalServGravados = 100000.00m,
+                    TotalGravado = 100000.00m,
+                    TotalVenta = 100000.00m,
+                    TotalVentaNeta = 100000.00m,
+                    TotalImpuesto = 4000.00m,
+                    TotalComprobante = 100000.00m,
+                },
+                Otros = new FacturaElectronicaOtros
+                {
+                    
+                },
+                Normativa = new FacturaElectronicaNormativa
+                {
+                    NumeroResolucion = "DGT-R-48-2016",
+                    FechaResolucion = "07-10-2016 08:00:00",
+                }
             };
 
             // ==========
