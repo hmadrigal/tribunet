@@ -44,15 +44,15 @@ namespace Tribunet.Atv.TerminalApp
                     codigoSeguridad: 1
                 );
 
-            ClaveNumerica cn = "50618102100310137332200100001010000002527105558162";
-            claveNumerica = cn;
-            NumeroConsecutivo nc = "00100001010000002527";
-            numeroConsecutivo = nc;
+            // ClaveNumerica cn = "50618102100310137332200100001010000002527105558162";
+            // claveNumerica = cn;
+            // NumeroConsecutivo nc = "00100001010000002527";
+            // numeroConsecutivo = nc;
 
             var comprobanteElectronico = new FacturaElectronica
             {
-                //Clave = claveNumerica,
-                Clave = cn,
+                Clave = claveNumerica,
+                //Clave = cn,
                 NumeroConsecutivo = numeroConsecutivo,
                 FechaEmision = localNow,
                 Emisor = new EmisorType
@@ -188,7 +188,7 @@ namespace Tribunet.Atv.TerminalApp
             SignatureParameters signatureParameters = new SignatureParameters();
             signatureParameters.SignaturePolicyInfo = new SignaturePolicyInfo();
             signatureParameters.SignaturePolicyInfo.PolicyIdentifier =
-                "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.1/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
+                "https://tribunet.hacienda.go.cr/docs/esquemas/2016/v4.2/Resolucion_Comprobantes_Electronicos_DGT-R-48-2016.pdf";
             signatureParameters.SignaturePolicyInfo.PolicyHash = "Ohixl6upD6av8N7pEvDABhEL6hM=";
             signatureParameters.SignaturePackaging = SignaturePackaging.ENVELOPED;
             signatureParameters.DataFormat = new DataFormat();
@@ -251,8 +251,6 @@ namespace Tribunet.Atv.TerminalApp
                 return;
             }
 
-            
-
             // ==========
             // TODO: Sends the `comprobante electronico` 
 
@@ -284,16 +282,25 @@ namespace Tribunet.Atv.TerminalApp
                 comprobanteXml: Convert.ToBase64String(signedComprobanteStream.ToArray())
             );
 
+
+            var responseHeaders = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase)
+            {
+                "X-Ratelimit-Limit", "X-Ratelimit-Remaining", "X-Ratelimit-Reset", "X-Error-Cause", "validation-exception"
+            };
+
             var recepcionApiClient = new RecepcionApi(config);
             try
             {
                 // Recibe el comprobante electrónico o respuesta del receptor.
-                //await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
-                var response = await recepcionApiClient.PostReceptionWithHttpInfoAsync(recepcionPostRequest);
+                await recepcionApiClient.PostReceptionAsync(recepcionPostRequest);
+                // var response = await recepcionApiClient.PostReceptionWithHttpInfoAsync(recepcionPostRequest);
             }
             catch (ApiException e)
             {
+                var headers = e.Headers.Where(h => responseHeaders.Contains(h.Key)).Select(h => $"\t[{h.Key}]='{string.Join(",", h.Value)}\n");
+                
                 Debug.WriteLine("Exception when calling RecepcionApi.PostReception: " + e.Message);
+                Debug.WriteLine($"Headers:\n" + string.Join(string.Empty, headers));
                 Debug.WriteLine("Status Code: " + e.ErrorCode);
                 Debug.WriteLine(e.StackTrace);
             }
